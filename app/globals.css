@@ -1,0 +1,179 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * CCD Studio — tema baseado no DESIGN.md (darkroom editorial, tons quentes).
+ * Tema único escuro: os valores ficam em :root e o <html> recebe a classe .dark
+ * para que as variantes dark: dos componentes shadcn também se apliquem.
+ */
+
+@theme inline {
+  /* ---- Paleta da marca (use direto: bg-walnut, text-cream, border-cork…) ---- */
+  --color-cream: var(--brand-cream);
+  --color-walnut: var(--brand-walnut);
+  --color-bark: var(--brand-bark);
+  --color-cork: var(--brand-cork);
+  --color-driftwood: var(--brand-driftwood);
+  --color-ember: var(--brand-ember);
+
+  /* ---- Tokens semânticos (shadcn) ---- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ---- Fontes ---- */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+  --font-legal: Arial, ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Escala tipográfica (text-display, text-heading, text-body…) ---- */
+  --text-legal: 8px;
+  --text-legal--line-height: 1.2;
+  --text-label: 12px;
+  --text-label--line-height: 1.2;
+  --text-subheading: 18px;
+  --text-subheading--line-height: 1;
+  --text-heading-sm: 24px;
+  --text-heading-sm--line-height: 1.09;
+  --text-body: 29px;
+  --text-body--line-height: 1.26;
+  --text-heading: 41px;
+  --text-heading--line-height: 0.9;
+  --text-display: 51px;
+  --text-display--line-height: 0.9;
+
+  /* ---- Espaçamentos nomeados (p-card, gap-gutter) ---- */
+  --spacing-card: 24px;
+  --spacing-gutter: 18px;
+
+  /* ---- Raios: cards 12px, ghost 22.5px, pill 36px, inputs 0 ---- */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: var(--radius-card);
+  --radius-2xl: var(--radius-ghost);
+  --radius-3xl: var(--radius-pill);
+  --radius-4xl: var(--radius-pill);
+  --radius-card: 12px;
+  --radius-ghost: 22.5px;
+  --radius-pill: 36px;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Paleta do DESIGN.md */
+  --brand-cream: #ffedd7; /* texto (nunca #fff) */
+  --brand-walnut: #100904; /* canvas (nunca #000) */
+  --brand-bark: #382416; /* única superfície elevada / CTA preenchido */
+  --brand-cork: #40372e; /* bordas e divisores */
+  --brand-driftwood: #6c5f51; /* estrutura secundária */
+  --brand-ember: #dc5000; /* acento editorial — nunca em botões/CTAs */
+
+  --background: var(--brand-walnut);
+  --foreground: var(--brand-cream);
+  --card: var(--brand-walnut);
+  --card-foreground: var(--brand-cream);
+  --popover: var(--brand-bark);
+  --popover-foreground: var(--brand-cream);
+  --primary: var(--brand-bark);
+  --primary-foreground: var(--brand-cream);
+  --secondary: var(--brand-bark);
+  --secondary-foreground: var(--brand-cream);
+  --muted: #1e130b;
+  --muted-foreground: color-mix(in oklab, var(--brand-cream) 62%, transparent);
+  --accent: var(--brand-bark);
+  --accent-foreground: var(--brand-cream);
+  --destructive: #f2555a;
+  --border: var(--brand-cork);
+  --input: var(--brand-cork);
+  --ring: var(--brand-driftwood);
+  --radius: 12px;
+
+  --chart-1: var(--brand-cream);
+  --chart-2: var(--brand-ember);
+  --chart-3: var(--brand-driftwood);
+  --chart-4: #a08a72;
+  --chart-5: var(--brand-cork);
+
+  --sidebar: var(--brand-walnut);
+  --sidebar-foreground: var(--brand-cream);
+  --sidebar-primary: var(--brand-bark);
+  --sidebar-primary-foreground: var(--brand-cream);
+  --sidebar-accent: var(--brand-bark);
+  --sidebar-accent-foreground: var(--brand-cream);
+  --sidebar-border: var(--brand-cork);
+  --sidebar-ring: var(--brand-driftwood);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    font-feature-settings: "ss01" on;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /* Títulos: sempre MAIÚSCULAS, peso 500, alinhados à esquerda */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-medium uppercase;
+  }
+  ::selection {
+    @apply bg-bark text-cream;
+  }
+}
+
+@layer components {
+  /* Rótulo/nav/legenda: a voz padrão do sistema */
+  .label {
+    @apply text-label font-medium uppercase;
+  }
+  /* Micro-texto legal (Arial 8px) */
+  .legal {
+    @apply font-legal text-legal font-medium uppercase;
+  }
+  /* Divisor tracejado hairline */
+  .divider-dashed {
+    @apply w-full border-t border-dashed border-cork;
+  }
+}
