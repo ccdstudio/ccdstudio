@@ -1,24 +1,34 @@
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
+import { buttonVariants } from "@/components/ui/button"
+import { Brand } from "./brand"
 
 const nav = [
   { href: "/", label: "Início" },
-  { href: "/design", label: "Design" },
 ]
 
-// DESIGN.md: nav fixa, transparente, micro-tipografia maiúscula, até 4 itens.
+// Topo das páginas públicas: marca, navegação em pílulas e CTA "Entrar".
 export function SiteHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-card py-gutter">
-      <Link href="/" className="label">
-        CCD Studio
-      </Link>
-      <nav className="flex items-center gap-card">
-        {nav.map((item) => (
-          <Link key={item.href} href={item.href} className="label hover:underline hover:decoration-dashed hover:underline-offset-4">
-            {item.label}
+    <header className="sticky top-0 z-50 border-b border-border bg-canvas/90 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-8">
+        <Brand />
+        <nav className="flex items-center gap-1">
+          {nav.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground sm:inline-flex"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <ThemeToggle />
+          <Link href="/login" className={buttonVariants({ className: "ml-1" })}>
+            Entrar
           </Link>
-        ))}
-      </nav>
+        </nav>
+      </div>
     </header>
   )
 }

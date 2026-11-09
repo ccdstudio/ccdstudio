@@ -1,25 +1,43 @@
 import Link from "next/link"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Tick02Icon } from "@hugeicons/core-free-icons"
 import { SiteHeader } from "@/components/layout/site-header"
 import { buttonVariants } from "@/components/ui/button"
+
+const BENEFITS = [
+  ["Roteiros e metadados.", "Títulos, descrições e tags otimizados para o YouTube."],
+  ["Thumbnails e cortes.", "Ideias de thumbnail, shorts e capítulos a partir do vídeo."],
+  ["Tudo em um lugar.", "Histórico das gerações e créditos sempre à vista."],
+]
 
 export default function Home() {
   return (
     <>
       <SiteHeader />
-      <main className="flex min-h-svh flex-1 flex-col justify-end gap-card p-card pt-[120px]">
-        <p className="label">AM Educação</p>
-        <h1 className="text-[clamp(51px,12vw,160px)] leading-[0.9]">CCD Studio</h1>
-        <div className="divider-dashed" />
-        <div className="grid gap-gutter md:grid-cols-[1fr_auto] md:items-end">
-          <p className="max-w-3xl text-lg md:text-body">
-            Ambiente pronto para desenvolver. Os tokens e componentes do design estão em{" "}
-            <Link href="/design" className="underline underline-offset-4">/design</Link>.
-          </p>
-          <Link href="/design" className={buttonVariants({ size: "lg" })}>
-            Ver o design system
+      <main className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center gap-10 px-4 py-20 sm:px-8">
+        <span className="label flex items-center gap-1.5">
+          <span aria-hidden className="size-1.5 rounded-full bg-primary" />
+          AM Educação
+        </span>
+        <h1 className="max-w-4xl text-5xl leading-[1.05] font-extrabold tracking-[-0.04em] sm:text-7xl">
+          Conteúdo para YouTube com IA, do roteiro à thumbnail.
+        </h1>
+        <ul className="flex flex-col gap-3">
+          {BENEFITS.map(([title, description]) => (
+            <li key={title} className="flex items-start gap-3 text-[15px]">
+              <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.25} className="mt-0.5 size-[18px] shrink-0 text-info" />
+              <span>
+                <strong className="font-semibold">{title}</strong>{" "}
+                <span className="text-muted-foreground">{description}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/login" className={buttonVariants({ size: "lg" })}>
+            Entrar no CCD Studio
           </Link>
         </div>
-        <p className="legal text-ember">* Built by AM Educação</p>
       </main>
     </>
   )
