@@ -16,6 +16,9 @@ Regras definidas pelo dono do produto. Siga sempre, sem exceção:
    aberto por um botão ("Novo …", "Editar", "Alterar senha"). A página mostra os dados só para leitura
    (cards com `<dl>`/tabelas) e o botão de ação fica no cabeçalho do card (`CardAction`) ou na barra acima da tabela.
    - Exceções: telas que são o próprio formulário de entrada (`/login`, `/esqueci-senha`).
+   - Exceção: **gerações com IA** (Otimização de vídeo, Roteiro…) usam um **formulário em etapas numa página própria**
+     (`/criar/<ferramenta>/nova`), uma pergunta por tela, com a tela de geração animada e o resultado entrando na mesma
+     aba. Componentes: `components/ai/step-wizard.tsx` e `components/ai/generation-progress.tsx`.
    - Componentes: `FormDialog` (`components/shared/form-dialog.tsx`) para o modal, `TextField`/`FormMessage`
      (`components/forms/form-field.tsx`) e `SubmitButton` (`components/forms/submit-button.tsx`) para os campos.
    - Leitura: `SectionCard` (`components/shared/section-card.tsx`) + `DataList` (`components/shared/data-list.tsx`);

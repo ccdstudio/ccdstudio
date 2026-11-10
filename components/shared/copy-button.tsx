@@ -7,7 +7,17 @@ import { Copy01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 
 /** Copia um texto para a área de transferência, com toast. Usado nos resultados das ferramentas de IA. */
-export function CopyButton({ text, label = "Copiar", what }: { text: string; label?: string; what?: string }) {
+export function CopyButton({
+  text,
+  label = "Copiar",
+  what,
+  size = "xs",
+}: {
+  text: string
+  label?: string
+  what?: string
+  size?: "xs" | "sm" | "default"
+}) {
   const [copied, setCopied] = useState(false)
 
   async function copy() {
@@ -22,7 +32,7 @@ export function CopyButton({ text, label = "Copiar", what }: { text: string; lab
   }
 
   return (
-    <Button type="button" variant="outline" size="xs" onClick={copy} aria-label={what ? `Copiar ${what.toLowerCase()}` : label}>
+    <Button type="button" variant="outline" size={size} onClick={copy} aria-label={what ? `Copiar ${what.toLowerCase()}` : label}>
       <HugeiconsIcon icon={copied ? Tick02Icon : Copy01Icon} strokeWidth={1.75} data-icon="inline-start" />
       {copied ? "Copiado" : label}
     </Button>

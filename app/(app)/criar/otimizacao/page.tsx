@@ -1,21 +1,20 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
+import { NewGenerationLink } from "@/components/ai/new-generation-link"
 import { PageHeader } from "@/components/layout/page-header"
 import { buttonVariants } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { isAiConfigured } from "@/lib/ai/client"
-import { DEFAULT_NICHE } from "@/lib/ai/prompts/metadata"
 import { requireUser } from "@/lib/auth/dal"
 import { getCreditBalance } from "@/lib/credits/balance"
 import { creditsLabel, FEATURE_COSTS } from "@/lib/credits/costs"
 import { NOTICE } from "@/lib/status-colors"
 import { createClient } from "@/lib/supabase/server"
-import { NewOptimizationDialog } from "./new-optimization-dialog"
 
 export const metadata: Metadata = { title: "Otimização de vídeo · CCD Studio" }
 
-const HEADER = { eyebrow: "Criar", title: "Otimização de vídeo", icon: "optimize" as const }
+const HEADER = { eyebrow: "Criar", title: "Otimização de vídeo", icon: "optimize" as const, help: "otimizacao" as const }
 const PAGE_SIZE = 10
 const COST = FEATURE_COSTS.metadata
 const dateFmt = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" })
@@ -54,13 +53,8 @@ async function Optimizations({ searchParams }: { searchParams: PageProps<"/criar
       ? `Você está sem créditos. Os créditos gratuitos renovam no dia 1.`
       : null
 
-  const dialog = (label?: string) => (
-    <NewOptimizationDialog
-      cost={creditsLabel(COST)}
-      defaultNiche={DEFAULT_NICHE}
-      disabled={!configured || noCredits}
-      label={label}
-    />
+  const dialog = (label = "Nova otimização") => (
+    <NewGenerationLink href="/criar/otimizacao/nova" label={label} disabled={!configured || noCredits} />
   )
 
   return (
@@ -70,6 +64,7 @@ async function Optimizations({ searchParams }: { searchParams: PageProps<"/criar
         description="Títulos ranqueados, par título + thumbnail, descrição pensada para a busca, tags e perguntas de SEO."
         actions={dialog()}
       />
+
 
       {notice ? (
         <p role="status" className={NOTICE.warning}>

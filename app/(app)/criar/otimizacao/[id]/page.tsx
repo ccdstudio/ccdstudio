@@ -1,27 +1,25 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { AlertCircleIcon, ArrowLeft01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { AlertCircleIcon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { NewGenerationLink } from "@/components/ai/new-generation-link"
 import { PageHeader } from "@/components/layout/page-header"
 import { CopyButton } from "@/components/shared/copy-button"
 import { SectionCard } from "@/components/shared/section-card"
+import { Stagger } from "@/components/shared/stagger"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
 import { metadataOutputSchema, metadataInputSchema } from "@/lib/ai/schemas/metadata"
-import { DEFAULT_NICHE } from "@/lib/ai/prompts/metadata"
 import { requireUser } from "@/lib/auth/dal"
-import { creditsLabel, FEATURE_COSTS } from "@/lib/credits/costs"
+import { creditsLabel } from "@/lib/credits/costs"
 import { CHECK_ICON, scoreTone } from "@/lib/status-colors"
 import { createClient } from "@/lib/supabase/server"
 import { cn } from "@/lib/utils"
 import { queryTest, rankTitles } from "@/lib/youtube/title-lint"
-import { NewOptimizationDialog } from "../new-optimization-dialog"
 
 export const metadata: Metadata = { title: "Resultado da otimização · CCD Studio" }
 
-const HEADER = { eyebrow: "Otimização de vídeo", icon: "optimize" as const }
+const HEADER = { eyebrow: "Otimização de vídeo", icon: "optimize" as const, help: "otimizacao-resultado" as const }
 const dateFmt = new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeStyle: "short", timeZone: "America/Sao_Paulo" })
 
 function Chips({ items }: { items: string[] }) {
@@ -79,23 +77,18 @@ async function Result({ params }: { params: PageProps<"/criar/otimizacao/[id]">[
         {...HEADER}
         title={input.data.palavraChave}
         description={`${input.data.assunto} · ${dateFmt.format(new Date(generation.created_at))}`}
+        back={{ href: "/criar/otimizacao" }}
         actions={
           <>
-            <Link href="/criar/otimizacao" className={buttonVariants({ variant: "outline" })}>
-              <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={1.75} data-icon="inline-start" />
-              Voltar
-            </Link>
-            <NewOptimizationDialog
-              cost={creditsLabel(FEATURE_COSTS.metadata)}
-              defaultNiche={input.data.nicho || DEFAULT_NICHE}
-            />
+            <NewGenerationLink href="/criar/otimizacao/nova" label="Nova otimização" />
           </>
         }
       />
 
-      <div className="flex flex-col gap-6">
+      <Stagger className="flex flex-col gap-6">
         <SectionCard
           title="Títulos"
+          term="notaTitulo"
           description="Ranqueados pelo lint do título: tamanho (60/40), CAIXA ALTA, palavras vagas, número concreto e repetição com a thumbnail."
         >
           <ol className="flex flex-col gap-3">
@@ -134,6 +127,7 @@ async function Result({ params }: { params: PageProps<"/criar/otimizacao/[id]">[
 
         <SectionCard
           title="Thumbnail"
+          hint="A imagem que aparece antes do clique. Aqui vem o texto curto para colocar nela, uma orientação para quem for montar a imagem e dois textos prontos para colar num gerador de imagens."
           description="Título e thumbnail são uma peça só: o texto da imagem diz o que o título não diz, em até 3 palavras."
         >
           <div className="flex flex-col gap-4">
@@ -161,6 +155,7 @@ async function Result({ params }: { params: PageProps<"/criar/otimizacao/[id]">[
 
         <SectionCard
           title="Teste das 3 buscas"
+          term="buscas"
           description="As buscas que este vídeo deve vencer. O título escolhido e as primeiras linhas precisam conter as palavras delas."
         >
           <ul className="flex flex-col gap-2">
@@ -184,6 +179,7 @@ async function Result({ params }: { params: PageProps<"/criar/otimizacao/[id]">[
 
         <SectionCard
           title="Tags e hashtags"
+          term="tags"
           description="Tags servem para desambiguação (grafias, siglas, termos citados). 10 a 15 bastam."
           actions={
             <>
@@ -209,9 +205,12 @@ async function Result({ params }: { params: PageProps<"/criar/otimizacao/[id]">[
           description={`${o.perguntas_seo.length} perguntas como as pessoas pesquisam: ideias para o roteiro, capítulos e comentários fixados.`}
           actions={<CopyButton text={o.perguntas_seo.join("\n")} what="Perguntas" label="Copiar todas" />}
         >
-          <ol className="grid list-decimal gap-1.5 pl-5 text-sm sm:grid-cols-2">
+          {/* Em colunas: a numeração desce a 1ª coluna inteira e continua no topo da 2ª. */}
+          <ol className="list-decimal gap-x-10 pl-5 text-sm sm:columns-2">
             {o.perguntas_seo.map((q) => (
-              <li key={q}>{q}</li>
+              <li key={q} className="mb-1.5 break-inside-avoid">
+                {q}
+              </li>
             ))}
           </ol>
         </SectionCard>
@@ -219,7 +218,7 @@ async function Result({ params }: { params: PageProps<"/criar/otimizacao/[id]">[
         <p className="text-center text-xs text-muted-foreground">
           Gerado por IA com {creditsLabel(generation.credits_charged)}. Revise antes de publicar: nada é publicado automaticamente.
         </p>
-      </div>
+      </Stagger>
     </>
   )
 }

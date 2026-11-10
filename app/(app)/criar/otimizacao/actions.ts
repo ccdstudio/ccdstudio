@@ -1,11 +1,11 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { requireUser } from "@/lib/auth/dal"
-import type { FormState } from "@/lib/auth/schemas"
+import type { WizardResult } from "@/components/ai/step-wizard"
 import { buildMetadataPrompt, METADATA_PROMPT_VERSION, type ChannelContext } from "@/lib/ai/prompts/metadata"
 import { AiError, runAiFeature } from "@/lib/ai/run-feature"
+import { getVoiceProfile, voicePromptBlock } from "@/lib/ai/voice"
 import { isCompleteMetadata, metadataInputSchema, metadataOutputSchema } from "@/lib/ai/schemas/metadata"
 import { createClient } from "@/lib/supabase/server"
 
@@ -16,18 +16,20 @@ async function channelContext(channelId: string | null): Promise<ChannelContext>
   return data ? { title: data.title, description: data.description } : null
 }
 
-export async function generateMetadata(_prev: FormState, formData: FormData): Promise<FormState> {
+/** Chamada pelo formulário em etapas (StepWizard). Sucesso devolve o id; o cliente leva ao resultado. */
+export async function generateOptimization(values: Record<string, string>): Promise<WizardResult> {
   const user = await requireUser()
 
   const parsed = metadataInputSchema.safeParse({
-    assunto: formData.get("assunto"),
-    palavraChave: formData.get("palavraChave"),
-    objetivo: formData.get("objetivo"),
-    nicho: formData.get("nicho"),
+    assunto: values.assunto,
+    palavraChave: values.palavraChave,
+    objetivo: values.objetivo,
+    nicho: values.nicho,
   })
   if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors }
 
-  const { system, userMessage } = buildMetadataPrompt(parsed.data, await channelContext(user.youtube_channel_id))
+  const [channel, voice] = await Promise.all([channelContext(user.youtube_channel_id), getVoiceProfile(user.id)])
+  const { system, userMessage } = buildMetadataPrompt(parsed.data, channel, voicePromptBlock(voice))
 
   let id: string
   try {
@@ -49,5 +51,5 @@ export async function generateMetadata(_prev: FormState, formData: FormData): Pr
   }
 
   revalidatePath("/", "layout") // saldo da sidebar
-  redirect(`/criar/otimizacao/${id}`)
+  return { id }
 }
