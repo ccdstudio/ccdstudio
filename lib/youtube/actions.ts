@@ -31,6 +31,8 @@ function youtubeFailure(error: unknown, field?: string): FormState {
 function revalidateChannelPages() {
   revalidatePath("/perfil")
   revalidatePath("/meu-canal")
+  // A topbar (layout) mostra o nome e a foto do canal.
+  revalidatePath("/", "layout")
 }
 
 export async function saveYoutubeChannel(_prev: FormState, formData: FormData): Promise<FormState> {

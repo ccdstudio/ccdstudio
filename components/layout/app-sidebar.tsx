@@ -12,6 +12,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { requireUser } from "@/lib/auth/dal"
+import { createClient } from "@/lib/supabase/server"
 import { getCreditBalance, LOW_CREDITS } from "@/lib/credits/balance"
 import { getNavigation } from "@/lib/navigation"
 import { BrandIcon } from "./brand"
@@ -54,10 +55,31 @@ function Shell({ children, footer }: { children: React.ReactNode; footer: React.
   )
 }
 
-/** Menu do usuário na topbar (lê o usuário no servidor). */
+/** Menu do usuário na topbar (lê o usuário e o canal vinculado no servidor). */
 export async function TopbarUser() {
   const user = await requireUser()
-  return <NavUser user={{ name: user.name, email: user.email, role: user.role }} alert={user.must_change_password} />
+  let channel: { title: string; thumbnail_url: string | null } | null = null
+  if (user.youtube_channel_id) {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from("youtube_channels")
+      .select("title, thumbnail_url")
+      .eq("id", user.youtube_channel_id)
+      .maybeSingle()
+    channel = data
+  }
+  return (
+    <NavUser
+      user={{
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        channelTitle: channel?.title ?? null,
+        avatarUrl: channel?.thumbnail_url ?? null,
+      }}
+      alert={user.must_change_password}
+    />
+  )
 }
 
 /**

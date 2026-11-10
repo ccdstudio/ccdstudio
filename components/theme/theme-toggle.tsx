@@ -18,7 +18,7 @@ export function ThemeToggle() {
       <TooltipTrigger
         render={
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon-sm"
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
             aria-label="Alternar tema claro/escuro"

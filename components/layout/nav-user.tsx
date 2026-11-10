@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowDown01Icon, Logout01Icon, UserCircleIcon } from "@hugeicons/core-free-icons"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,9 @@ import {
 import type { AppRole } from "@/lib/supabase/database.types"
 import { roleLabel } from "@/lib/navigation"
 
-type NavUserProps = { user: { name: string; email: string; role: AppRole } }
+type NavUserProps = {
+  user: { name: string; email: string; role: AppRole; channelTitle: string | null; avatarUrl: string | null }
+}
 
 function initials(name: string, email: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean)
@@ -27,6 +29,7 @@ function initials(name: string, email: string) {
 function UserAvatar({ user }: NavUserProps) {
   return (
     <Avatar className="size-8 rounded-full">
+      {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt="" referrerPolicy="no-referrer" /> : null}
       <AvatarFallback className="bg-primary text-xs font-bold text-primary-foreground">
         {initials(user.name, user.email)}
       </AvatarFallback>
@@ -37,6 +40,8 @@ function UserAvatar({ user }: NavUserProps) {
 /** Menu do usuário na direita da topbar: avatar + nome (desktop), Perfil e Sair. */
 export function NavUser({ user, alert = false }: NavUserProps & { alert?: boolean }) {
   const label = user.name || user.email
+  // Abaixo do nome: o canal vinculado; sem canal, o papel (Super admin, Admin, Usuário).
+  const subtitle = user.channelTitle ?? roleLabel[user.role]
 
   return (
     <DropdownMenu>
@@ -47,7 +52,7 @@ export function NavUser({ user, alert = false }: NavUserProps & { alert?: boolea
         <UserAvatar user={user} />
         <span className="hidden max-w-40 flex-col text-left leading-tight md:flex">
           <span className="truncate text-sm font-semibold">{label}</span>
-          <span className="truncate text-xs text-muted-foreground">{roleLabel[user.role]}</span>
+          <span className="truncate text-xs text-muted-foreground">{subtitle}</span>
         </span>
         <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={1.75} className="hidden size-4 text-muted-foreground md:block" />
         {alert ? (
@@ -60,10 +65,13 @@ export function NavUser({ user, alert = false }: NavUserProps & { alert?: boolea
             <UserAvatar user={user} />
             <div className="grid flex-1 text-left leading-tight">
               <span className="truncate text-sm font-semibold text-foreground">{label}</span>
-              <span className="truncate text-xs text-muted-foreground">{roleLabel[user.role]}</span>
+              <span className="truncate text-xs text-muted-foreground">{subtitle}</span>
             </div>
           </DropdownMenuLabel>
-          <p className="truncate px-1.5 pb-1.5 text-xs text-muted-foreground">{user.email}</p>
+          <div className="grid gap-0.5 px-1.5 pb-1.5 text-xs text-muted-foreground">
+            <p className="truncate">{user.email}</p>
+            {user.channelTitle ? <p className="truncate">{roleLabel[user.role]}</p> : null}
+          </div>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/perfil" />}>
