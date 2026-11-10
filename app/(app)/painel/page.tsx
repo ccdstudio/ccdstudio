@@ -17,6 +17,7 @@ async function Welcome() {
       title={firstName ? `Olá, ${firstName}` : "Painel"}
       description="Acompanhe suas gerações e acesse as ferramentas do CCD Studio."
       icon="dashboard"
+      help="painel"
     />
   )
 }
@@ -34,7 +35,7 @@ async function AdminQuota() {
 export default function DashboardPage() {
   return (
     <>
-      <Suspense fallback={<PageHeader eyebrow="Visão geral" title="Painel" icon="dashboard" />}>
+      <Suspense fallback={<PageHeader eyebrow="Visão geral" title="Painel" icon="dashboard" help="painel" />}>
         <Welcome />
       </Suspense>
       <Suspense>

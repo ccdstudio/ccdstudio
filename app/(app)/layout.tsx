@@ -19,7 +19,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-border bg-canvas/90 px-4 backdrop-blur">
           <SidebarTrigger className="-ml-1 rounded-full" />
           <Separator orientation="vertical" className="mr-2 self-center! data-[orientation=vertical]:h-4" />
-          <PageTitle />
+          {/* usePathname() suspende em rotas com parâmetro dinâmico ([id]); o Suspense deixa o resto do layout pré-renderizar. */}
+          <Suspense fallback={<Skeleton className="h-4 w-32 rounded-full" />}>
+            <PageTitle />
+          </Suspense>
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
             <Suspense fallback={<Skeleton className="size-8 rounded-full" />}>
