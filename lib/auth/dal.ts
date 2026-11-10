@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import type { AppRole, Profile } from "@/lib/supabase/database.types"
 
-export type CurrentUser = Pick<Profile, "id" | "name" | "email" | "role" | "is_active" | "must_change_password">
+export type CurrentUser = Pick<Profile, "id" | "name" | "email" | "role" | "is_active" | "must_change_password" | "youtube_channel_id">
 
 /**
  * Data Access Layer — única porta de entrada para "quem é o usuário".
@@ -19,7 +19,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, name, email, role, is_active, must_change_password")
+    .select("id, name, email, role, is_active, must_change_password, youtube_channel_id")
     .eq("id", userId)
     .single()
 

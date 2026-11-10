@@ -168,6 +168,10 @@ Custo **fixo por requisição**, sem relação com os tokens:
 
 ## 8. Integração com o YouTube
 
+> **Fase 1 — dados públicos (sem OAuth), em andamento:** API key + cache no banco + `pg_cron`.
+> Plano: [`YOUTUBE-DADOS-PUBLICOS.md`](./YOUTUBE-DADOS-PUBLICOS.md) · Configuração do Google Cloud:
+> [`GOOGLE-CLOUD-PASSO-A-PASSO.md`](./GOOGLE-CLOUD-PASSO-A-PASSO.md). As seções abaixo descrevem a **fase 2 (OAuth)**.
+
 ### 8.1 Pré-requisitos (começar já, porque levam semanas)
 - Projeto no Google Cloud com **YouTube Data API v3** e **YouTube Analytics API** habilitadas.
 - Tela de consentimento OAuth com:

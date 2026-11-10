@@ -13,7 +13,7 @@ import { changePassword, updateProfile } from "./actions"
 
 // Convenção do projeto: edição sempre em modal (FormDialog), a página fica só em leitura.
 
-function useOnSuccess(state: FormState, onSuccess: () => void) {
+export function useOnSuccess(state: FormState, onSuccess: () => void) {
   useEffect(() => {
     if (state.ok && state.message) {
       toast.success(state.message)
@@ -22,7 +22,7 @@ function useOnSuccess(state: FormState, onSuccess: () => void) {
   }, [state])
 }
 
-function DialogActions({ onCancel, children }: { onCancel: () => void; children: React.ReactNode }) {
+export function DialogActions({ onCancel, children }: { onCancel: () => void; children: React.ReactNode }) {
   return (
     <div className="flex flex-col-reverse gap-2 pt-2 sm:col-span-2 sm:flex-row sm:justify-end">
       <Button type="button" variant="ghost" onClick={onCancel}>

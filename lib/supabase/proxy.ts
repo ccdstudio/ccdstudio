@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server"
 import type { Database } from "./database.types"
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./public-env"
 
-const PUBLIC_PATHS = ["/", "/login", "/esqueci-senha"]
+const PUBLIC_PATHS = ["/", "/login", "/esqueci-senha", "/auth/callback", "/privacidade", "/termos"]
 const AUTH_ONLY_PATHS = ["/login"] // logado não precisa ver
 
 // Renova a sessão (cookies) e faz o redirecionamento otimista.

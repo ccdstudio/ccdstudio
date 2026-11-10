@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+# credenciais OAuth baixadas do Google Cloud
+client_secret*.json
 
 # debug
 npm-debug.log*

@@ -6,6 +6,7 @@ import { SectionCard } from "@/components/shared/section-card"
 import { RoleBadge, StatusBadge } from "@/components/shared/status-badge"
 import { requireUser } from "@/lib/auth/dal"
 import { ChangePasswordDialog, EditAccountDialog } from "./profile-forms"
+import { YoutubeChannelCard, YoutubeChannelCardSkeleton } from "./youtube-channel-card"
 
 export const metadata: Metadata = { title: "Meu perfil · CCD Studio" }
 
@@ -34,6 +35,10 @@ async function Profile() {
             ]}
           />
         </SectionCard>
+
+        <Suspense fallback={<YoutubeChannelCardSkeleton />}>
+          <YoutubeChannelCard channelId={user.youtube_channel_id} />
+        </Suspense>
 
         <SectionCard
           title="Senha"

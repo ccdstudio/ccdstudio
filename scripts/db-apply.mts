@@ -33,3 +33,19 @@ for (const file of files) {
 // Auth: sem cadastro público (só admins criam contas) e senha mínima de 8.
 await patchAuthConfig({ disable_signup: true, password_min_length: 8 })
 console.log("✓ Auth: cadastro público desativado, senha mínima 8")
+
+// Login com Google (docs/GOOGLE-LOGIN-PASSO-A-PASSO.md). O cadastro continua fechado:
+// só entra quem já tem conta com o mesmo e-mail (o Supabase vincula a identidade Google).
+const googleId = process.env.GOOGLE_CLIENT_ID
+const googleSecret = process.env.GOOGLE_CLIENT_SECRET
+if (googleId && googleSecret) {
+  await patchAuthConfig({
+    external_google_enabled: true,
+    external_google_client_id: googleId,
+    external_google_secret: googleSecret,
+    uri_allow_list: "http://localhost:3000/auth/callback,http://localhost:3000/**",
+  })
+  console.log("✓ Auth: Google ativado (retorno em http://localhost:3000/auth/callback)")
+} else {
+  console.log("• Auth: Google não configurado (defina GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET)")
+}

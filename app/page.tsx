@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Tick02Icon } from "@hugeicons/core-free-icons"
+import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -39,6 +40,7 @@ export default function Home() {
           </Link>
         </div>
       </main>
+      <SiteFooter />
     </>
   )
 }
