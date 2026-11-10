@@ -20,6 +20,8 @@ type BaseOptions = {
   system?: string
   /** Mensagem do usuário. */
   input: string
+  /** URLs de imagens enviadas junto (modelos com visão), em baixa resolução. */
+  images?: string[]
   /** Sempre definido: inclui os tokens de raciocínio nos modelos que raciocinam. */
   maxOutputTokens: number
   model?: string
@@ -39,7 +41,17 @@ function requestParams(opts: BaseOptions) {
     params: {
       model,
       instructions: opts.system,
-      input: opts.input,
+      input: opts.images?.length
+        ? [
+            {
+              role: "user" as const,
+              content: [
+                { type: "input_text" as const, text: opts.input },
+                ...opts.images.map((url) => ({ type: "input_image" as const, image_url: url, detail: "low" as const })),
+              ],
+            },
+          ]
+        : opts.input,
       max_output_tokens: opts.maxOutputTokens,
       store: false,
       ...(isReasoningModel(model)

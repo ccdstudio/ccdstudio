@@ -5,10 +5,19 @@ export const FEATURE_COSTS = {
   shorts: 1,
   chapters: 1,
   thumbnail: 2,
+  /** Perfil de voz: grátis (melhora todas as outras gerações). */
+  voice: 0,
+  ideas: 1,
+  audit: 1,
+  plan: 1,
 } as const
+
+/** Custo extra do diagnóstico quando analisa as miniaturas por visão. */
+export const AUDIT_THUMBNAILS_EXTRA = 1
 
 export type AiFeature = keyof typeof FEATURE_COSTS
 
 export function creditsLabel(amount: number) {
+  if (amount === 0) return "grátis"
   return `${amount} ${amount === 1 ? "crédito" : "créditos"}`
 }

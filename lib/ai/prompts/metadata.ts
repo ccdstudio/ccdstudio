@@ -3,7 +3,7 @@ import type { MetadataInput } from "@/lib/ai/schemas/metadata"
 
 // Otimização de vídeo — revisão do `metadata-generator` v1.1.0 (docs/PROMPTS.md §1) com as regras das skills
 // yt-package e yt-seo (references/youtube-agent-skill, MIT © 2026 Jake Schincariol).
-export const METADATA_PROMPT_VERSION = "2.0.0"
+export const METADATA_PROMPT_VERSION = "2.1.0"
 
 export const DEFAULT_NICHE = "Contabilidade e finanças empresariais"
 
@@ -49,7 +49,9 @@ SEO
 - hashtags: exatamente 5, cada uma começando com #. A primeira é a PALAVRA_CHAVE sem espaços e sem acentos; as outras 4 ligadas ao tema.
 - cta_final: 1 frase de ação ligada ao OBJETIVO. Não fale em "link na bio" ou "baixe a planilha" se o OBJETIVO não pedir.
 
-{{CONTEXTO_CANAL}}`
+{{CONTEXTO_CANAL}}
+
+{{VOZ}}`
 
 const USER = `ASSUNTO DO VÍDEO:
 {{ASSUNTO}}
@@ -64,7 +66,8 @@ Gere os metadados seguindo todas as regras.`
 
 export type ChannelContext = { title: string; description: string } | null
 
-export function buildMetadataPrompt(input: MetadataInput, channel: ChannelContext) {
+/** `voice`: bloco de voicePromptBlock (lib/ai/voice.ts), vazio se o usuário não tiver perfil. */
+export function buildMetadataPrompt(input: MetadataInput, channel: ChannelContext, voice = "") {
   const contextoCanal = channel
     ? `CONTEXTO DO CANAL (use para acertar o público e a voz, sem citar o nome do canal nos títulos)
 Canal: ${channel.title}
@@ -76,6 +79,7 @@ Sobre o canal: ${channel.description.slice(0, 800)}`
       NICHO: input.nicho,
       REGRAS_NICHO: isAccounting(input.nicho) ? ACCOUNTING_RULES : "",
       CONTEXTO_CANAL: contextoCanal,
+      VOZ: voice,
     }),
     userMessage: interpolatePrompt(USER, {
       ASSUNTO: input.assunto,

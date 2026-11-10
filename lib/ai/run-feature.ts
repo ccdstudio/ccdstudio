@@ -26,12 +26,16 @@ type RunOptions<S extends z.ZodType> = {
   validate?: (output: z.infer<S>) => boolean
   maxOutputTokens: number
   temperature?: number
+  /** Imagens (URLs) enviadas ao modelo, ex.: miniaturas no diagnóstico. */
+  images?: string[]
+  /** Sobrescreve FEATURE_COSTS (ex.: diagnóstico com miniaturas). */
+  cost?: number
 }
 
 export async function runAiFeature<S extends z.ZodType>(opts: RunOptions<S>): Promise<{ id: string; output: z.infer<S> }> {
   if (!isAiConfigured()) throw new AiError("not_configured")
 
-  const cost = FEATURE_COSTS[opts.feature]
+  const cost = opts.cost ?? FEATURE_COSTS[opts.feature]
   const balance = await getCreditBalance(opts.userId)
   if (balance.total < cost) throw new AiError("insufficient_credits")
 
@@ -43,6 +47,7 @@ export async function runAiFeature<S extends z.ZodType>(opts: RunOptions<S>): Pr
     validate: opts.validate,
     maxOutputTokens: opts.maxOutputTokens,
     temperature: opts.temperature,
+    images: opts.images,
     retries: 1,
   })
 

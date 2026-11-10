@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
+import { InfoHint } from "@/components/shared/info-hint"
 import { cn } from "@/lib/utils"
+import type { GlossaryKey } from "@/lib/youtube/glossary"
 
 type SectionCardProps = {
   title: string
@@ -10,6 +12,9 @@ type SectionCardProps = {
   className?: string
   /** Âncora (ex.: /perfil#canal). */
   id?: string
+  /** "?" ao lado do título, com explicação em linguagem simples. */
+  term?: GlossaryKey
+  hint?: string
 }
 
 /**
@@ -17,7 +22,7 @@ type SectionCardProps = {
  * conteúdo à direita, num card plano com borda. Usado em modo leitura; a edição
  * abre em modal pelo botão em `actions`.
  */
-export function SectionCard({ title, description, actions, children, className, id }: SectionCardProps) {
+export function SectionCard({ title, description, actions, children, className, id, term, hint }: SectionCardProps) {
   return (
     <section
       id={id}
@@ -27,7 +32,10 @@ export function SectionCard({ title, description, actions, children, className, 
       )}
     >
       <div className="flex flex-col gap-1">
-        <h2 className="text-base font-bold">{title}</h2>
+        <h2 className="flex items-center gap-1.5 text-base font-bold">
+          {title}
+          {term || hint ? <InfoHint term={term} text={hint} label={title} /> : null}
+        </h2>
         {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
         {actions ? <div className="mt-3 flex flex-wrap gap-2">{actions}</div> : null}
       </div>

@@ -36,3 +36,13 @@ Material de terceiros mantido no repositório para consulta e reaproveitamento n
 - Os prompts estão em inglês e falam de `~/.claude/...` e comandos `/yt-*`: traduzir e adaptar para o fluxo
   do app (server action → OpenAI → validação Zod), conforme `docs/SISTEMA-NOVO.md`.
 - As ferramentas Python são heurísticas simples; para usar no app, portar a lógica para TypeScript em `lib/`.
+
+### O que já foi portado
+
+| Original | No CCD Studio | Observação |
+|---|---|---|
+| `yt-package/title.py` | `lib/youtube/title-lint.ts` | Palavras vagas e stopwords em pt-BR |
+| `yt-script/hooks.json` (21 fórmulas) | `lib/youtube/formulas.ts` | Nomes, exemplos e regex em pt-BR, com fronteira de palavra que entende acentos |
+| `yt-script/hookscore.py` | `lib/youtube/hook-score.ts` | Listas em pt-BR; faixas recalibradas (forte ≥ 58, ok ≥ 42) |
+| `yt-viral/swipe.py` | `lib/youtube/channel-insights.ts` (`outliers`) | Aplicado ao próprio canal, com Shorts e longos separados e no mínimo 4 vídeos |
+| `yt-audit`, `yt-viral`, `yt-script`, `templates/voice.md` | `lib/ai/prompts/{audit,ideas,script,voice}.ts` | Ver `docs/PROMPTS.md` |

@@ -287,7 +287,43 @@ Duração alvo: {{duration}}
 
 ### Notas para revisão
 
--
+**Implementado no sistema novo: v2.0.0** em `lib/ai/prompts/script.ts`, na tela `/criar/roteiro`. Junta este prompt
+com a skill `yt-script`.
+- **Ganchos:** 5 ganchos nas 21 fórmulas (`lib/youtube/formulas.ts`), cada um com nota de 0 a 100
+  (`lib/youtube/hook-score.ts`, porta do `hookscore.py`). Os 2 melhores ficam em destaque.
+- **Abertura e corpo:**
+  - a virada vem sem vinheta e sem pedido de inscrição;
+  - os blocos trazem `fala` e `na_tela`;
+  - a entrega é explícita, com UM pedido no final.
+- **Tamanho:** é dimensionado pela duração escolhida (5, 8, 10 ou 15 min), a 150 palavras por minuto. Se vier com
+  menos de 70% das palavras, uma nova tentativa é feita.
+- **Contexto:** as fórmulas dos vídeos que estouraram no canal, mais o perfil de voz.
+- **Saíram** os "7 momentos" fixos do v1. A estrutura agora segue a skill.
+
+---
+
+## Prompts novos (sistema novo)
+
+Os prompts abaixo não existiam no sistema antigo. Todos usam `runAiFeature`, gravam em `ai_generations` e recebem o
+perfil de voz quando ele existe.
+
+| Feature | Arquivo | Skill de origem | Custo | Tela |
+|---|---|---|---|---|
+| Perfil de voz | `lib/ai/prompts/voice.ts` | `templates/voice.md` | grátis | Análises do canal → Seu jeito de falar |
+| Próximas ideias | `lib/ai/prompts/ideas.ts` | `yt-viral` | 1 crédito | Análises do canal → Vídeos que estouraram |
+| Diagnóstico | `lib/ai/prompts/audit.ts` | `yt-audit` | 1 crédito (2 com miniaturas) | Análises do canal → Diagnóstico do canal |
+
+- **Perfil de voz:** deduz nicho, público, tom, os termos que o criador usa e os que evita, o que ele não promete e o
+  formato. Só deduz o que está nos textos do canal; o resto fica vazio. O bloco gerado entra em todos os prompts
+  pelo `voicePromptBlock`.
+- **Ideias:**
+  - a entrada é o resumo calculado em `insightsForPrompt`, com os estouros por múltiplo da mediana (Shorts e longos
+    separados);
+  - a saída é o padrão em comum e 3 ideias que dá para gravar esta semana.
+- **Diagnóstico:**
+  - devolve UMA correção principal, 3 coisas que já funcionam e o que não fazer agora;
+  - com a opção marcada, as 10 últimas miniaturas vão por visão, em baixa resolução;
+  - usa só os números já calculados e nunca inventa CTR ou retenção.
 
 ---
 

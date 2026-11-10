@@ -1,4 +1,6 @@
 import type { Metadata } from "next"
+import Link from "next/link"
+import { buttonVariants } from "@/components/ui/button"
 import { Suspense } from "react"
 import { PageHeader } from "@/components/layout/page-header"
 import { DataList } from "@/components/shared/data-list"
@@ -10,7 +12,7 @@ import { YoutubeChannelCard, YoutubeChannelCardSkeleton } from "./youtube-channe
 
 export const metadata: Metadata = { title: "Meu perfil · CCD Studio" }
 
-const HEADER = { eyebrow: "Conta", title: "Meu perfil", icon: "profile" as const }
+const HEADER = { eyebrow: "Conta", title: "Meu perfil", icon: "profile" as const, help: "perfil" as const }
 
 // Página só de leitura: cada seção tem um botão que abre a edição em modal.
 async function Profile() {
@@ -39,6 +41,20 @@ async function Profile() {
         <Suspense fallback={<YoutubeChannelCardSkeleton />}>
           <YoutubeChannelCard channelId={user.youtube_channel_id} />
         </Suspense>
+
+        <SectionCard
+          title="Seu jeito de falar"
+          description="Ensina a IA a escrever como você fala. Fica em Análises do canal."
+          actions={
+            <Link href="/analises/voz" className={buttonVariants({ variant: "outline", size: "sm" })}>
+              Abrir
+            </Link>
+          }
+        >
+          <p className="text-sm text-muted-foreground">
+            Com quem você fala, o seu tom e as palavras que são suas. Usado em todos os títulos e roteiros gerados por IA.
+          </p>
+        </SectionCard>
 
         <SectionCard
           title="Senha"
