@@ -45,6 +45,18 @@ export const createUserSchema = z.object({
 
 export const userIdSchema = z.uuid()
 
+export const adjustCreditsSchema = z.object({
+  userId: userIdSchema,
+  operacao: z.enum(["adicionar", "remover"], "Escolha adicionar ou remover"),
+  quantidade: z.coerce
+    .number("Informe a quantidade")
+    .int("Use um número inteiro")
+    .min(1, "Mínimo de 1 crédito")
+    .max(1000, "Máximo de 1000 créditos por ajuste"),
+  tipo: z.enum(["purchased", "free"], "Escolha o tipo de crédito"),
+  motivo: z.string().trim().min(3, "Escreva o motivo (mínimo de 3 caracteres)").max(200, "Máximo de 200 caracteres"),
+})
+
 /** Estado padrão retornado pelas Server Actions de formulário */
 export type FormState = {
   ok?: boolean

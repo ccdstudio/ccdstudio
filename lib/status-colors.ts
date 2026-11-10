@@ -37,7 +37,11 @@ export const STATUS_DOT: Record<keyof typeof STATUS_BADGE, string> = {
 export const NOTICE = {
   warning:
     "rounded-xl border border-amber-300 bg-amber-100 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/15 dark:text-amber-300",
+  info: "rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-500/40 dark:bg-blue-500/15 dark:text-blue-300",
 } as const
+
+/** Extrato de créditos: entrada em verde, saída em neutro. */
+export const LEDGER_TONE = { in: tone.emerald, out: tone.slate } as const
 
 /** Nota do lint de título (0–100). */
 export function scoreTone(score: number) {
@@ -49,3 +53,6 @@ export const CHECK_ICON = {
   ok: "text-emerald-600 dark:text-emerald-400",
   warn: "text-amber-600 dark:text-amber-400",
 } as const
+
+/** Faixa da nota de gancho (hook-score): forte ≥ 58, ok ≥ 42, fraco abaixo. */
+export const HOOK_BAND_TONE = { forte: tone.emerald, ok: tone.amber, fraco: tone.red } as const

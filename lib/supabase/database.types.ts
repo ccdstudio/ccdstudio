@@ -98,6 +98,10 @@ export type Database = {
           reason: "monthly_reset" | "usage" | "adjustment" | "purchase" | "refund" | "migration"
           ref_id: string | null
           period: string | null
+          /** Motivo do ajuste manual (aparece no extrato). */
+          note: string | null
+          /** Quem fez o ajuste manual. */
+          actor_id: string | null
           created_at: string
         }
         Insert: never
@@ -152,6 +156,34 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["youtube_videos"]["Insert"]>
         Relationships: []
       }
+      voice_profiles: {
+        Row: {
+          user_id: string
+          niche: string
+          audience: string
+          tone: string
+          uses: string[]
+          avoids: string[]
+          wont_claim: string[]
+          format: string
+          source: "ai" | "manual"
+          updated_at: string
+        }
+        Insert: {
+          user_id: string
+          niche?: string
+          audience?: string
+          tone?: string
+          uses?: string[]
+          avoids?: string[]
+          wont_claim?: string[]
+          format?: string
+          source?: "ai" | "manual"
+          updated_at?: string
+        }
+        Update: Partial<Database["public"]["Tables"]["voice_profiles"]["Insert"]>
+        Relationships: []
+      }
       youtube_api_usage: {
         Row: { day: string; units_used: number; requests: number; updated_at: string }
         Insert: { day: string; units_used?: number; requests?: number }
@@ -180,6 +212,10 @@ export type Database = {
         }
         Returns: string
       }
+      adjust_credits: {
+        Args: { p_user: string; p_bucket: "free" | "purchased"; p_amount: number; p_note: string; p_actor: string }
+        Returns: number
+      }
     }
     Enums: { app_role: AppRole }
     CompositeTypes: Record<string, never>
@@ -189,4 +225,5 @@ export type Database = {
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 export type YoutubeChannel = Database["public"]["Tables"]["youtube_channels"]["Row"]
 export type YoutubeVideo = Database["public"]["Tables"]["youtube_videos"]["Row"]
+export type VoiceProfile = Database["public"]["Tables"]["voice_profiles"]["Row"]
 export type AiGeneration = Database["public"]["Tables"]["ai_generations"]["Row"]

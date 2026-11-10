@@ -61,6 +61,12 @@ export function canManage(actor: Pick<CurrentUser, "id" | "role">, target: Pick<
   return actor.role === "admin" && target.role === "user"
 }
 
+/** Ajuste de créditos: superadmin ajusta qualquer conta (inclusive a própria, para testes); admin só usuários comuns. */
+export function canAdjustCredits(actor: Pick<CurrentUser, "id" | "role">, target: Pick<Profile, "id" | "role">) {
+  if (actor.role === "superadmin") return true
+  return actor.role === "admin" && target.role === "user" && actor.id !== target.id
+}
+
 export function canCreateRole(actor: Pick<CurrentUser, "role">, role: AppRole) {
   if (role === "superadmin") return false
   if (role === "admin") return actor.role === "superadmin"

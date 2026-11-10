@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache"
 import { env } from "@/lib/env"
-import { canCreateRole, canManage, requireRole } from "@/lib/auth/dal"
-import { createUserSchema, userIdSchema, type FormState } from "@/lib/auth/schemas"
+import { canAdjustCredits, canCreateRole, canManage, requireRole } from "@/lib/auth/dal"
+import { adjustCreditsSchema, createUserSchema, userIdSchema, type FormState } from "@/lib/auth/schemas"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 // Toda action revalida o papel do autor no servidor antes de usar o service role.
@@ -95,4 +95,44 @@ export async function resetUserPassword(id: string): Promise<FormState> {
 
   revalidatePath(PATH)
   return { ok: true, message: "Senha redefinida para a senha temporária. O usuário verá um aviso para trocá-la." }
+}
+
+/** Adiciona ou remove créditos (aparece no extrato do usuário com o motivo). Nunca deixa o saldo negativo. */
+export async function adjustUserCredits(_prev: FormState, formData: FormData): Promise<FormState> {
+  const actor = await requireRole("admin")
+  const parsed = adjustCreditsSchema.safeParse({
+    userId: formData.get("userId"),
+    operacao: formData.get("operacao"),
+    quantidade: formData.get("quantidade"),
+    tipo: formData.get("tipo"),
+    motivo: formData.get("motivo"),
+  })
+  if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors }
+  const { userId, operacao, quantidade, tipo, motivo } = parsed.data
+
+  const target = await loadTarget(userId)
+  if (!target || !canAdjustCredits(actor, target)) return { message: "Você não tem permissão para alterar esta conta." }
+
+  const amount = operacao === "adicionar" ? quantidade : -quantidade
+  const { data, error } = await createAdminClient().rpc("adjust_credits", {
+    p_user: target.id,
+    p_bucket: tipo,
+    p_amount: amount,
+    p_note: motivo,
+    p_actor: actor.id,
+  })
+  if (error) {
+    if (error.message.includes("insufficient_balance")) {
+      const has = Number(error.details) || 0
+      const kind = tipo === "free" ? "gratuitos" : "comprados"
+      return { fieldErrors: { quantidade: [`O usuário só tem ${has} ${has === 1 ? "crédito" : "créditos"} ${kind}.`] } }
+    }
+    console.error("[credits] ajuste falhou", error.code)
+    return { message: "Não foi possível ajustar os créditos." }
+  }
+
+  revalidatePath(PATH)
+  revalidatePath("/conta/planos")
+  const verb = operacao === "adicionar" ? "adicionados" : "removidos"
+  return { ok: true, message: `${quantidade} ${quantidade === 1 ? "crédito" : "créditos"} ${verb}. Novo saldo desse tipo: ${data}.` }
 }

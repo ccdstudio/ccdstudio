@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CoinsDollarIcon } from "@hugeicons/core-free-icons"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
@@ -7,16 +8,18 @@ import { cn } from "@/lib/utils"
 
 type CreditsCardProps = { free: number; purchased: number; nextReset: string; low: boolean }
 
-/** Saldo de créditos sempre visível na sidebar (gratuitos renovam todo mês; comprados não expiram). */
+/** Saldo de créditos sempre visível na sidebar; leva a Planos e créditos (saldo + extrato). */
 export function CreditsCard({ free, purchased, nextReset, low }: CreditsCardProps) {
   const total = free + purchased
   const detail = `${free} gratuitos · ${purchased} comprados · renova em ${nextReset}`
 
   return (
     <div>
-      <div
+      <Link
+        href="/conta/planos"
+        aria-label={`${total} créditos. Ver saldo e extrato`}
         className={cn(
-          "flex flex-col gap-1 rounded-xl border p-3 group-data-[collapsible=icon]:hidden",
+          "flex flex-col gap-1 rounded-xl border p-3 outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:hidden",
           low ? "border-amber-300/40 bg-amber-400/10" : "border-sidebar-border bg-sidebar-accent/50"
         )}
       >
@@ -37,11 +40,12 @@ export function CreditsCard({ free, purchased, nextReset, low }: CreditsCardProp
             {free} gratuitos · {purchased} comprados
           </p>
         ) : null}
-      </div>
+      </Link>
 
       <SidebarMenu className="hidden group-data-[collapsible=icon]:flex">
         <SidebarMenuItem>
           <SidebarMenuButton
+            render={<Link href="/conta/planos" />}
             tooltip={`${total} créditos (${detail})`}
             className={cn("rounded-full tabular-nums", low && "text-amber-300")}
             aria-label={`${total} créditos`}

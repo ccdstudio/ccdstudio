@@ -3,8 +3,9 @@ import { Suspense } from "react"
 import { PageHeader } from "@/components/layout/page-header"
 import { RoleBadge, StatusBadge } from "@/components/shared/status-badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { canManage, requireRole } from "@/lib/auth/dal"
+import { canAdjustCredits, canManage, requireRole } from "@/lib/auth/dal"
 import { createClient } from "@/lib/supabase/server"
+import { AdjustCreditsDialog } from "./adjust-credits-form"
 import { CreateUserDialog } from "./create-user-form"
 import { PAGE_SIZE, parseUserFilters, sanitizeSearch, type UserFilters } from "./filters"
 import { UserRowActions } from "./user-row-actions"
@@ -19,9 +20,10 @@ const HEADER = {
   eyebrow: "Visão geral",
   title: "Usuários",
   icon: "users" as const,
+  help: "usuarios" as const,
 }
 
-const COLUMNS = 6
+const COLUMNS = 7
 
 /** Busca paginada e filtrada no banco (RLS: admins leem todos os perfis). */
 async function fetchUsers(filters: UserFilters) {
@@ -57,11 +59,18 @@ async function UsersAdmin({ searchParams }: { searchParams: PageProps<"/admin/us
 
   const hasFilters = Boolean(filters.q || filters.papel || filters.status)
 
+  // Saldo de créditos dos usuários da página (RLS: admins leem todos).
+  const ids = (users ?? []).map((u) => u.id)
+  const { data: balances } = ids.length
+    ? await (await createClient()).from("credit_balances").select("user_id, free, purchased").in("user_id", ids)
+    : { data: [] }
+  const balanceOf = new Map((balances ?? []).map((b) => [b.user_id, b]))
+
   return (
     <>
       <PageHeader
         {...HEADER}
-        description="Crie contas, ative ou desative acessos e redefina senhas."
+        description="Crie contas, ative ou desative acessos, redefina senhas e ajuste créditos."
         actions={<CreateUserDialog canCreateAdmin={actor.role === "superadmin"} />}
       />
 
@@ -79,6 +88,7 @@ async function UsersAdmin({ searchParams }: { searchParams: PageProps<"/admin/us
                   <TableHead className="label">E-mail</TableHead>
                   <TableHead className="label">Tipo</TableHead>
                   <TableHead className="label">Status</TableHead>
+                  <TableHead className="label">Créditos</TableHead>
                   <TableHead className="label">Criado em</TableHead>
                   <TableHead className="label px-4 text-right">Ações</TableHead>
                 </TableRow>
@@ -98,12 +108,27 @@ async function UsersAdmin({ searchParams }: { searchParams: PageProps<"/admin/us
                           {u.must_change_password ? <StatusBadge status="temporaryPassword" /> : null}
                         </div>
                       </TableCell>
+                      <TableCell className="font-semibold tabular-nums">
+                        {(balanceOf.get(u.id)?.free ?? 0) + (balanceOf.get(u.id)?.purchased ?? 0)}
+                      </TableCell>
                       <TableCell className="text-muted-foreground tabular-nums">
                         {dateFmt.format(new Date(u.created_at))}
                       </TableCell>
                       <TableCell className="px-4">
-                        {canManage(actor, u) ? (
-                          <UserRowActions id={u.id} name={u.name || u.email} isActive={u.is_active} />
+                        {canManage(actor, u) || canAdjustCredits(actor, u) ? (
+                          <div className="flex justify-end gap-2">
+                            {canAdjustCredits(actor, u) ? (
+                              <AdjustCreditsDialog
+                                userId={u.id}
+                                name={u.name || u.email}
+                                free={balanceOf.get(u.id)?.free ?? 0}
+                                purchased={balanceOf.get(u.id)?.purchased ?? 0}
+                              />
+                            ) : null}
+                            {canManage(actor, u) ? (
+                              <UserRowActions id={u.id} name={u.name || u.email} isActive={u.is_active} />
+                            ) : null}
+                          </div>
                         ) : (
                           <span className="block text-right text-xs text-muted-foreground">—</span>
                         )}

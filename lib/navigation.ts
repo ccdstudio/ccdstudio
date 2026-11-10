@@ -15,6 +15,10 @@ export type IconKey =
   | "calendar"
   | "profile"
   | "channel"
+  | "diagnosis"
+  | "outliers"
+  | "rhythm"
+  | "voice"
   | "billing"
   | "users"
 
@@ -46,14 +50,24 @@ const navigation: NavGroup[] = [
     items: [
       { title: "Perfil", href: "/perfil", icon: "profile" },
       { title: "Meu canal", href: "/meu-canal", icon: "channel" },
-      { title: "Planos e créditos", href: "/conta/planos", icon: "billing", soon: true },
+      { title: "Planos e créditos", href: "/conta/planos", icon: "billing" },
+    ],
+  },
+  {
+    // Funcionalidades que usam os dados do canal + regras da skill + IA (cada uma numa página).
+    label: "Análises do canal",
+    items: [
+      { title: "Diagnóstico do canal", href: "/analises/diagnostico", icon: "diagnosis" },
+      { title: "Vídeos que estouraram", href: "/analises/estouros", icon: "outliers" },
+      { title: "Melhor dia e ritmo", href: "/analises/ritmo", icon: "rhythm" },
+      { title: "Seu jeito de falar", href: "/analises/voz", icon: "voice" },
     ],
   },
   {
     label: "Criar",
     items: [
       { title: "Otimização de vídeo", href: "/criar/otimizacao", icon: "optimize" },
-      { title: "Roteiro", href: "/criar/roteiro", icon: "script", soon: true },
+      { title: "Roteiro", href: "/criar/roteiro", icon: "script" },
       { title: "Thumbnail", href: "/criar/thumbnail", icon: "thumbnail", soon: true },
       { title: "Shorts", href: "/criar/shorts", icon: "shorts", soon: true },
       { title: "Capítulos", href: "/criar/capitulos", icon: "chapters", soon: true },
@@ -62,7 +76,7 @@ const navigation: NavGroup[] = [
   {
     label: "Conteúdo",
     items: [
-      { title: "Histórico", href: "/historico", icon: "history", soon: true },
+      { title: "Histórico", href: "/historico", icon: "history" },
       { title: "Calendário editorial", href: "/calendario", icon: "calendar", soon: true },
     ],
   },
