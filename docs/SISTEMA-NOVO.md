@@ -226,6 +226,14 @@ Custo **fixo por requisição**, sem relação com os tokens:
 | 5 | **YouTube** | Verificação Google, conexão, painel, lista de vídeos, otimizar e aplicar no vídeo | App verificado e atualização de vídeo real funcionando |
 | 6 | **Migração e cutover** | Script de migração, ensaio em staging, congelamento curto, virada de DNS | Contagens e saldos conferidos e login com senha antiga ok |
 
+**Progresso (nov/2026):**
+- Fase 1: feita (Auth Google + e-mail/senha, RLS, admin de usuários).
+- Fase 2: pipeline único `lib/ai/run-feature.ts` + **Otimização de vídeo** (prompt v2, histórico em
+  `ai_generations`). Faltam Roteiro, Thumbnail, Capítulos e Shorts.
+- Fase 3: feita a base (migration `0003_credits_ai.sql`): `plans` (gratuito = 20), `credit_balances`,
+  `credit_ledger`, `record_generation` (débito atômico + histórico), `reset_monthly_free_credits` no `pg_cron`
+  (dia 1, 03:00 de São Paulo) e o saldo na sidebar. Falta o extrato na UI e o ajuste manual pelo admin.
+
 As fases 1 a 4 podem ir a produção antes da 5. A verificação do Google (fase 5) deve ser **solicitada durante a fase 1**.
 
 ---

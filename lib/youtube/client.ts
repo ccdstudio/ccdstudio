@@ -54,6 +54,12 @@ const channelItemSchema = z.object({
     })
     .optional(),
   contentDetails: z.object({ relatedPlaylists: z.object({ uploads: z.string().optional() }) }).optional(),
+  brandingSettings: z
+    .object({
+      channel: z.object({ keywords: z.string().optional() }).optional(),
+      image: z.object({ bannerExternalUrl: z.string().optional() }).optional(),
+    })
+    .optional(),
 })
 
 export type ChannelItem = z.infer<typeof channelItemSchema>
@@ -72,25 +78,26 @@ function errorFromResponse(status: number, body: unknown): YoutubeError {
   const reasons = errorSchema.safeParse(body).data?.error?.errors?.map((e) => e.reason) ?? []
   const code: YoutubeErrorCode = reasons.some((r) => r === "quotaExceeded" || r === "dailyLimitExceeded")
     ? "quota"
-    : status === 400 || status === 403
-      ? "key"
-      : "unavailable"
+    : status === 404
+      ? "not_found"
+      : status === 400 || status === 403
+        ? "key"
+        : "unavailable"
   console.error(`[youtube] HTTP ${status}`, reasons.join(", "))
   return new YoutubeError(code, MESSAGES[code])
 }
 
-/** channels.list (1 unidade). Lança YoutubeError com mensagem pronta para o usuário. */
-export async function fetchChannel(lookup: ChannelLookup): Promise<ChannelItem> {
+/** GET na API (1 unidade por chamada, registrada na cota do dia). */
+async function apiGet(path: string, query: Record<string, string>): Promise<unknown> {
   const key = env.YOUTUBE_API_KEY
   if (!key) throw new YoutubeError("not_configured", MESSAGES.not_configured)
 
-  const params = new URLSearchParams({ part: "snippet,statistics,contentDetails", key })
-  if ("id" in lookup) params.set("id", lookup.id)
-  else params.set("forHandle", lookup.handle)
-
   let res: Response
   try {
-    res = await fetch(`${API}/channels?${params}`, { cache: "no-store", signal: AbortSignal.timeout(10_000) })
+    res = await fetch(`${API}/${path}?${new URLSearchParams({ ...query, key })}`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    })
   } catch {
     throw new YoutubeError("unavailable", MESSAGES.unavailable)
   }
@@ -98,7 +105,16 @@ export async function fetchChannel(lookup: ChannelLookup): Promise<ChannelItem> 
   await trackUsage(1)
   const body: unknown = await res.json().catch(() => null)
   if (!res.ok) throw errorFromResponse(res.status, body)
+  return body
+}
 
+/** channels.list (1 unidade). Lança YoutubeError com mensagem pronta para o usuário. */
+export async function fetchChannel(lookup: ChannelLookup): Promise<ChannelItem> {
+  const query: Record<string, string> = { part: "snippet,statistics,contentDetails,brandingSettings" }
+  if ("id" in lookup) query.id = lookup.id
+  else query.forHandle = lookup.handle
+
+  const body = await apiGet("channels", query)
   const first = listSchema.safeParse(body).data?.items?.[0]
   if (!first) throw new YoutubeError("not_found", MESSAGES.not_found)
 
@@ -108,4 +124,58 @@ export async function fetchChannel(lookup: ChannelLookup): Promise<ChannelItem> 
     throw new YoutubeError("unavailable", MESSAGES.unavailable)
   }
   return parsed.data
+}
+
+const playlistSchema = z.object({
+  items: z.array(z.object({ contentDetails: z.object({ videoId: z.string() }) })).default([]),
+})
+
+/** playlistItems.list da playlist de uploads (1 unidade): ids dos 50 vídeos mais recentes. */
+export async function fetchUploadIds(playlistId: string): Promise<string[]> {
+  try {
+    const body = await apiGet("playlistItems", { part: "contentDetails", playlistId, maxResults: "50" })
+    return playlistSchema.parse(body).items.map((i) => i.contentDetails.videoId)
+  } catch (error) {
+    // Canal sem vídeos públicos: a playlist de uploads não existe (404).
+    if (error instanceof YoutubeError && error.code === "not_found") return []
+    throw error
+  }
+}
+
+const videoItemSchema = z.object({
+  id: z.string(),
+  snippet: z.object({
+    title: z.string(),
+    publishedAt: z.string().optional(),
+    thumbnails: z.object({ default: thumb, medium: thumb, high: thumb }).optional(),
+  }),
+  contentDetails: z.object({ duration: z.string().optional() }).optional(),
+  statistics: z
+    .object({
+      viewCount: z.coerce.number().optional(),
+      likeCount: z.coerce.number().optional(),
+      commentCount: z.coerce.number().optional(),
+    })
+    .optional(),
+})
+
+export type VideoItem = z.infer<typeof videoItemSchema>
+
+/** videos.list (1 unidade para até 50 ids). */
+export async function fetchVideos(ids: string[]): Promise<VideoItem[]> {
+  if (ids.length === 0) return []
+  const body = await apiGet("videos", { part: "snippet,statistics,contentDetails", id: ids.slice(0, 50).join(",") })
+  const items = listSchema.safeParse(body).data?.items ?? []
+  return items.flatMap((item) => {
+    const parsed = videoItemSchema.safeParse(item)
+    return parsed.success ? [parsed.data] : []
+  })
+}
+
+/** Duração ISO 8601 (PT1H2M3S, P1DT2H) em segundos. */
+export function parseDuration(iso?: string): number | null {
+  const m = iso?.match(/^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/)
+  if (!m) return null
+  const [, d, h, min, s] = m.map((v) => Number(v ?? 0))
+  return d * 86400 + h * 3600 + min * 60 + s
 }

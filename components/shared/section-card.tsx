@@ -8,6 +8,8 @@ type SectionCardProps = {
   actions?: ReactNode
   children: ReactNode
   className?: string
+  /** Âncora (ex.: /perfil#canal). */
+  id?: string
 }
 
 /**
@@ -15,11 +17,12 @@ type SectionCardProps = {
  * conteúdo à direita, num card plano com borda. Usado em modo leitura; a edição
  * abre em modal pelo botão em `actions`.
  */
-export function SectionCard({ title, description, actions, children, className }: SectionCardProps) {
+export function SectionCard({ title, description, actions, children, className, id }: SectionCardProps) {
   return (
     <section
+      id={id}
       className={cn(
-        "grid gap-6 rounded-xl border border-border bg-card p-6 lg:grid-cols-[minmax(0,240px)_1fr] lg:p-7",
+        "grid scroll-mt-20 gap-6 rounded-xl border border-border bg-card p-6 lg:grid-cols-[minmax(0,240px)_1fr] lg:p-7",
         className
       )}
     >

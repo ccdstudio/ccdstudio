@@ -9,8 +9,8 @@ import { SubmitButton } from "@/components/forms/submit-button"
 import { FormDialog } from "@/components/shared/form-dialog"
 import { Button } from "@/components/ui/button"
 import type { FormState } from "@/lib/auth/schemas"
-import { DialogActions, useOnSuccess } from "./profile-forms"
-import { refreshYoutubeChannel, removeYoutubeChannel, saveYoutubeChannel } from "./youtube-actions"
+import { DialogActions, useOnSuccess } from "@/components/shared/form-helpers"
+import { refreshYoutubeChannel, removeYoutubeChannel, saveYoutubeChannel } from "@/lib/youtube/actions"
 
 /* ---------------- Adicionar / trocar canal ---------------- */
 

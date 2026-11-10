@@ -1,5 +1,6 @@
 import { Suspense } from "react"
-import { AppSidebar, AppSidebarSkeleton } from "@/components/layout/app-sidebar"
+import { AppSidebar, AppSidebarSkeleton, TopbarUser } from "@/components/layout/app-sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { PageTitle } from "@/components/layout/page-title"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { Separator } from "@/components/ui/separator"
@@ -19,8 +20,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarTrigger className="-ml-1 rounded-full" />
           <Separator orientation="vertical" className="mr-2 self-center! data-[orientation=vertical]:h-4" />
           <PageTitle />
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
+            <Suspense fallback={<Skeleton className="size-8 rounded-full" />}>
+              <TopbarUser />
+            </Suspense>
           </div>
         </header>
         {/* Container do Tailwind: acompanha a largura da tela até 1536px (2xl). */}

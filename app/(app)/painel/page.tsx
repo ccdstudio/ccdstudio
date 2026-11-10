@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { PageHeader } from "@/components/layout/page-header"
+import { AiStatusCard } from "@/components/ai/ai-status-card"
+import { QuotaCard } from "@/components/youtube/quota-card"
 import { requireUser } from "@/lib/auth/dal"
 import { roleLabel } from "@/lib/navigation"
 
@@ -19,11 +21,24 @@ async function Welcome() {
   )
 }
 
+async function AdminQuota() {
+  const user = await requireUser()
+  return (
+    <>
+      <QuotaCard user={user} />
+      <AiStatusCard user={user} />
+    </>
+  )
+}
+
 export default function DashboardPage() {
   return (
     <>
       <Suspense fallback={<PageHeader eyebrow="Visão geral" title="Painel" icon="dashboard" />}>
         <Welcome />
+      </Suspense>
+      <Suspense>
+        <AdminQuota />
       </Suspense>
       <section className="rounded-xl border border-border bg-card p-6">
         <span className="label">Em breve</span>

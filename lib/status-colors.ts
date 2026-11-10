@@ -32,3 +32,20 @@ export const STATUS_DOT: Record<keyof typeof STATUS_BADGE, string> = {
   inactive: "bg-red-500",
   temporaryPassword: "bg-amber-500",
 }
+
+/** Faixas de aviso nas páginas (ex.: sem créditos, integração não configurada). */
+export const NOTICE = {
+  warning:
+    "rounded-xl border border-amber-300 bg-amber-100 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/40 dark:bg-amber-500/15 dark:text-amber-300",
+} as const
+
+/** Nota do lint de título (0–100). */
+export function scoreTone(score: number) {
+  return score >= 85 ? tone.emerald : score >= 65 ? tone.amber : tone.red
+}
+
+/** Ícones de checagem (ok / atenção). */
+export const CHECK_ICON = {
+  ok: "text-emerald-600 dark:text-emerald-400",
+  warn: "text-amber-600 dark:text-amber-400",
+} as const

@@ -172,7 +172,24 @@ Objetivo do vídeo:
 
 ### Notas para revisão
 
--
+**Implementado no sistema novo: v2.0.0** em `lib/ai/prompts/metadata.ts` (schema em `lib/ai/schemas/metadata.ts`,
+tela `/criar/otimizacao`). O que mudou em relação à v1.1.0:
+- **Nicho configurável** (`{{NICHO}}`, padrão "Contabilidade e finanças empresariais"). As regras de contabilidade
+  (não citar SPED/DCTF/leis sem relação, não chutar base legal) só entram quando o nicho é contábil.
+- **Regras das skills `yt-package` e `yt-seo`** (`references/youtube-agent-skill`):
+  - nunca inventar número, resultado ou fonte;
+  - **título + thumbnail como uma peça**: o texto da thumbnail tem até 3 palavras e não repete o título;
+  - **10 títulos** com ângulos diferentes, até 60 caracteres, no máximo 2 palavras em CAIXA ALTA. O app ranqueia
+    com o lint `lib/youtube/title-lint.ts` (porta do `title.py`);
+  - descrição dividida em **2 primeiras linhas** (snippet da busca) + corpo;
+  - **teste das 3 buscas** (`buscas_alvo`), conferido pelo app;
+  - **tags só para desambiguação**: 10 a 15, em vez de 25 a 35.
+- Saiu o bloco fixo de redes sociais (`<----ESPAÇO PARA O PRÓPRIO USUARIO…>`). Volta pelas Preferências, com os
+  links reais.
+- Sanitização de `{{ }}` saiu do prompt e foi para o código (`lib/ai/interpolate.ts`).
+- O canal do Perfil (nome + descrição) entra como contexto de público e voz.
+- **Chamada:** Responses API com saída estruturada (Zod), `store: false`, `max_output_tokens` e 1 nova tentativa se
+  vier incompleta. Custo: 1 crédito, cobrado só no sucesso.
 
 ---
 

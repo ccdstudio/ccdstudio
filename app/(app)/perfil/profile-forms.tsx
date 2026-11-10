@@ -1,37 +1,17 @@
 "use client"
 
 import { useActionState, useEffect, useState } from "react"
-import { toast } from "sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Edit02Icon, SecurityLockIcon } from "@hugeicons/core-free-icons"
 import { FormMessage, TextField } from "@/components/forms/form-field"
 import { SubmitButton } from "@/components/forms/submit-button"
 import { FormDialog } from "@/components/shared/form-dialog"
+import { DialogActions, useOnSuccess } from "@/components/shared/form-helpers"
 import { Button } from "@/components/ui/button"
 import type { FormState } from "@/lib/auth/schemas"
 import { changePassword, updateProfile } from "./actions"
 
 // Convenção do projeto: edição sempre em modal (FormDialog), a página fica só em leitura.
-
-export function useOnSuccess(state: FormState, onSuccess: () => void) {
-  useEffect(() => {
-    if (state.ok && state.message) {
-      toast.success(state.message)
-      onSuccess()
-    }
-  }, [state])
-}
-
-export function DialogActions({ onCancel, children }: { onCancel: () => void; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col-reverse gap-2 pt-2 sm:col-span-2 sm:flex-row sm:justify-end">
-      <Button type="button" variant="ghost" onClick={onCancel}>
-        Cancelar
-      </Button>
-      {children}
-    </div>
-  )
-}
 
 /* ---------------- Dados pessoais ---------------- */
 

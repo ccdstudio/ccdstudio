@@ -267,7 +267,12 @@ de 4 a 8 unidades por dia, então 8.000 unidades atendem por volta de **1.000 a 
 - [ ] `YOUTUBE_API_KEY` no `.env` (`lib/env.ts` e `.env.example` já atualizados; `CRON_SECRET` na fase 1C)
 - [x] Migration `0002_youtube_channel.sql` (cache do canal, `profiles.youtube_channel_id`, RLS, `increment_youtube_usage`)
 - [x] `lib/youtube/client.ts`, `parse-channel-input.ts`, `channel-cache.ts`
-- [ ] Vídeos e snapshots (`0003`, `lib/youtube/sync.ts`)
+- [x] Vídeos recentes (migration `0004_youtube_videos_quota.sql`): os 50 últimos uploads em `youtube_videos`
+      (`playlistItems.list` + `videos.list`, ~3 unidades por sincronização completa), renovados a cada 24h
+- [x] Contador de cota: `youtube_api_usage` (unidades + requisições por dia do Pacífico), lido só pelo superadmin
+      (`components/youtube/quota-card.tsx`, em `/meu-canal` e `/painel`)
+- [x] Página **Meu canal** (`app/(app)/meu-canal/`): indicadores, views por vídeo, mais vistos e tabela dos vídeos
+- [ ] Snapshots diários (histórico de inscritos/views) e pg_cron
 
 **Fase 1B — Tela**
 - [x] Card "Canal do YouTube" no `/perfil` (adicionar, trocar, remover, atualizar — no máximo 1×/hora)

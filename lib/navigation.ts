@@ -14,6 +14,7 @@ export type IconKey =
   | "history"
   | "calendar"
   | "profile"
+  | "channel"
   | "billing"
   | "users"
 
@@ -44,13 +45,14 @@ const navigation: NavGroup[] = [
     label: "Conta",
     items: [
       { title: "Perfil", href: "/perfil", icon: "profile" },
+      { title: "Meu canal", href: "/meu-canal", icon: "channel" },
       { title: "Planos e créditos", href: "/conta/planos", icon: "billing", soon: true },
     ],
   },
   {
     label: "Criar",
     items: [
-      { title: "Otimização de vídeo", href: "/criar/otimizacao", icon: "optimize", soon: true },
+      { title: "Otimização de vídeo", href: "/criar/otimizacao", icon: "optimize" },
       { title: "Roteiro", href: "/criar/roteiro", icon: "script", soon: true },
       { title: "Thumbnail", href: "/criar/thumbnail", icon: "thumbnail", soon: true },
       { title: "Shorts", href: "/criar/shorts", icon: "shorts", soon: true },

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { after } from "next/server"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { LinkSquare01Icon, YoutubeIcon } from "@hugeicons/core-free-icons"
@@ -8,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { createClient } from "@/lib/supabase/server"
 import { isExpired, refreshIfStale } from "@/lib/youtube/channel-cache"
 import { isYoutubeConfigured } from "@/lib/youtube/client"
-import { ChannelDialog, RefreshChannelButton, RemoveChannelDialog } from "./youtube-channel-forms"
+import { ChannelDialog, RefreshChannelButton, RemoveChannelDialog } from "@/components/youtube/channel-forms"
 
 const TITLE = "Canal do YouTube"
 const compact = new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 })
@@ -50,6 +51,7 @@ export async function YoutubeChannelCard({ channelId }: { channelId: string | nu
   if (!channel) {
     return (
       <SectionCard
+        id="canal"
         title={TITLE}
         description="Informe o seu canal para usarmos os dados públicos nas ferramentas."
         actions={<ChannelDialog disabled={!configured} />}
@@ -69,6 +71,7 @@ export async function YoutubeChannelCard({ channelId }: { channelId: string | nu
 
   return (
     <SectionCard
+      id="canal"
       title={TITLE}
       description="Dados públicos do YouTube, atualizados automaticamente a cada 24 horas."
       actions={
@@ -96,6 +99,9 @@ export async function YoutubeChannelCard({ channelId }: { channelId: string | nu
               {handle ?? "Ver no YouTube"}
               <HugeiconsIcon icon={LinkSquare01Icon} strokeWidth={1.75} className="size-3.5" />
             </a>
+            <Link href="/meu-canal" className="ml-3 text-sm font-medium text-primary hover:underline">
+              Ver painel em Meu canal
+            </Link>
           </div>
         </div>
 

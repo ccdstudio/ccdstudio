@@ -11,6 +11,7 @@ import {
   SparklesIcon,
   UserCircleIcon,
   UserMultiple02Icon,
+  YoutubeIcon,
 } from "@hugeicons/core-free-icons"
 import type { IconKey } from "@/lib/navigation"
 
@@ -25,6 +26,7 @@ export const NAV_ICONS: Record<IconKey, IconSvgElement> = {
   history: Clock01Icon,
   calendar: Calendar03Icon,
   profile: UserCircleIcon,
+  channel: YoutubeIcon,
   billing: CreditCardIcon,
   users: UserMultiple02Icon,
 }

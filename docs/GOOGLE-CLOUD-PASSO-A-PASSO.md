@@ -83,6 +83,14 @@ O erro mais comum é criar tudo na conta Google errada. Faça assim:
 1. No menu ☰, vá em **APIs e serviços → Credenciais**.
 2. No topo da página, clique em **+ Criar credenciais** e escolha **Chave de API**.
 3. Se aparecer um campo de **nome**, use `ccdstudio-servidor`.
+   - **Tela nova do Google (com "Selecionar restrições da API" obrigatório):** o console passou a pedir a restrição
+     já na criação. É o mesmo que o passo 5, só que antes:
+     1. **Restrições de aplicativo** (se aparecer): deixe **Nenhuma**;
+     2. em **Selecionar restrições da API**, abra o seletor, digite `YouTube` na busca e marque **somente
+        YouTube Data API v3** (se ela não aparecer, a API não foi ativada: volte ao passo 3);
+     3. clique fora do seletor e em **Criar**.
+
+     Feito assim, o passo 5 vira só uma conferência.
 4. O Google mostra a chave, um texto parecido com `AIzaSyA…` com uns 39 caracteres. Clique no ícone de **copiar**.
    - Guarde por enquanto num lugar seguro, como o gerenciador de senhas da empresa. **Não mande por WhatsApp, e-mail ou chat**.
    - Se fechar sem copiar, não tem problema: ela fica listada em **Credenciais → Chaves de API** e dá para ver de novo
@@ -93,7 +101,8 @@ O erro mais comum é criar tudo na conta Google errada. Faça assim:
 ## 5. Restringir a chave (importante)
 
 Uma chave sem restrição funciona para **qualquer** API do Google. Se vazar, alguém pode gastar a cota em seu nome.
-Restringir reduz o estrago.
+Restringir reduz o estrago. Se você já marcou a restrição ao criar a chave (tela nova do passo 4), só confira se está
+como abaixo.
 
 1. Em **Credenciais → Chaves de API**, clique no **nome** da chave (`ccdstudio-servidor`) ou no ícone de lápis/editar.
 2. **Restrições de API:**
