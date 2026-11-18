@@ -9,7 +9,7 @@ import { creditsLabel, FEATURE_COSTS } from "@/lib/credits/costs"
 import { cn } from "@/lib/utils"
 import { commonPattern, OUTLIER_MIN, outliers, type InsightVideo, type OutlierGroup } from "@/lib/youtube/channel-insights"
 import { formulaById } from "@/lib/youtube/formulas"
-import { generateIdeas } from "./actions"
+import { generateIdeas } from "./ideas-actions"
 
 const compact = new Intl.NumberFormat("pt-BR", { notation: "compact", maximumFractionDigits: 1 })
 const multipleFmt = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 })

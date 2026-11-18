@@ -126,10 +126,6 @@ async function Credits({ searchParams }: { searchParams: PageProps<"/conta/plano
                 <span className="font-semibold tabular-nums">{creditsLabel(t.cost)}</span>
               </li>
             ))}
-            <li className="flex items-center justify-between gap-3 px-3 py-2 text-muted-foreground">
-              <span>Thumbnail</span>
-              <span className="tabular-nums">{creditsLabel(FEATURE_COSTS.thumbnail)} · em breve</span>
-            </li>
           </ul>
         </SectionCard>
 

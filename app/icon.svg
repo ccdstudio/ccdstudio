@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ícone do CCD Studio (marca preenchida): etiqueta teal, play branco e brilho dourado sobre navy. -->
+  <defs>
+    <linearGradient id="t" x1="20" y1="0" x2="250" y2="141" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38bdf8"/><stop offset=".6" stop-color="#0892a5"/><stop offset="1" stop-color="#065a6f"/>
+    </linearGradient>
+    <linearGradient id="h" x1="0" y1="0" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="g" x1="203" y1="13" x2="245" y2="55" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c9910d"/><stop offset=".5" stop-color="#f2c94c"/><stop offset="1" stop-color="#c9910d"/>
+    </linearGradient>
+    <mask id="m"><rect width="265" height="141" fill="#fff"/><circle cx="55.5" cy="70.5" r="11" fill="#000"/></mask>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#021627"/>
+  <g transform="translate(4 17.1) scale(.2113)">
+    <g mask="url(#m)">
+      <path id="tag" d="M227.029 138.5L86.5859 138.5C82.3094 138.5 78.1812 136.934 74.9805 134.098L18.4326 83.9922C10.6106 77.0613 10.5669 64.8638 18.3398 57.8779L74.9687 6.98438C78.1811 4.09736 82.348 2.5 86.667 2.5L245 2.5C254.665 2.50001 262.5 10.335 262.5 20L262.5 102.461C262.5 103.936 262.314 105.406 261.945 106.834L259.943 114.59C259.162 117.617 257.584 120.381 255.373 122.592L249.2 128.765C247.771 130.193 246.106 131.364 244.277 132.225L234.48 136.834C232.15 137.931 229.605 138.5 227.029 138.5Z" fill="url(#t)"/>
+      <use href="#tag" fill="url(#h)"/>
+    </g>
+    <path d="M198.54 62.8281C203.971 65.6177 203.971 73.3823 198.54 76.1719L121.677 115.651C116.686 118.215 110.75 114.591 110.75 108.98L110.75 30.0195C110.75 24.4087 116.686 20.785 121.677 23.3486L198.54 62.8281Z" fill="#fff"/>
+    <path d="M224 13C225.6 24.5 229.5 28.4 245 34C229.5 39.6 225.6 43.5 224 55C222.4 43.5 218.5 39.6 203 34C218.5 28.4 222.4 24.5 224 13Z" fill="url(#g)"/>
+  </g>
+</svg>

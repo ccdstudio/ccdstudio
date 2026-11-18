@@ -33,11 +33,8 @@ type RunOptions<S extends z.ZodType> = {
 }
 
 export async function runAiFeature<S extends z.ZodType>(opts: RunOptions<S>): Promise<{ id: string; output: z.infer<S> }> {
-  if (!isAiConfigured()) throw new AiError("not_configured")
-
   const cost = opts.cost ?? FEATURE_COSTS[opts.feature]
-  const balance = await getCreditBalance(opts.userId)
-  if (balance.total < cost) throw new AiError("insufficient_credits")
+  await assertCanGenerate(opts.userId, cost)
 
   const { data: output, usage } = await aiJson({
     label: opts.feature,
@@ -51,22 +48,54 @@ export async function runAiFeature<S extends z.ZodType>(opts: RunOptions<S>): Pr
     retries: 1,
   })
 
+  const id = await recordGeneration({
+    userId: opts.userId,
+    feature: opts.feature,
+    promptVersion: opts.promptVersion,
+    model: usage.model,
+    input: opts.input,
+    output,
+    tokensIn: usage.inputTokens,
+    tokensOut: usage.outputTokens,
+    cost,
+  })
+  return { id, output }
+}
+
+/** Saldo suficiente para a ferramenta? Lança AiError se não der para gerar. */
+export async function assertCanGenerate(userId: string, cost: number) {
+  if (!isAiConfigured()) throw new AiError("not_configured")
+  const balance = await getCreditBalance(userId)
+  if (balance.total < cost) throw new AiError("insufficient_credits")
+}
+
+/** Débito + histórico numa transação (RPC record_generation). Só chamar depois que a geração deu certo. */
+export async function recordGeneration(r: {
+  userId: string
+  feature: AiFeature
+  promptVersion: string
+  model: string
+  input: Record<string, unknown>
+  output: unknown
+  tokensIn: number
+  tokensOut: number
+  cost: number
+}): Promise<string> {
   const { data: id, error } = await createAdminClient().rpc("record_generation", {
-    p_user: opts.userId,
-    p_feature: opts.feature,
-    p_prompt_version: opts.promptVersion,
-    p_model: usage.model,
-    p_input: opts.input as Json,
-    p_output: output as Json,
-    p_tokens_in: usage.inputTokens,
-    p_tokens_out: usage.outputTokens,
-    p_cost: cost,
+    p_user: r.userId,
+    p_feature: r.feature,
+    p_prompt_version: r.promptVersion,
+    p_model: r.model,
+    p_input: r.input as Json,
+    p_output: r.output as Json,
+    p_tokens_in: r.tokensIn,
+    p_tokens_out: r.tokensOut,
+    p_cost: r.cost,
   })
   if (error || !id) {
     if (error?.message.includes("insufficient_credits")) throw new AiError("insufficient_credits")
-    console.error(`[ai] ${opts.feature}: falha ao registrar`, error?.code)
+    console.error(`[ai] ${r.feature}: falha ao registrar`, error?.code)
     throw new AiError("unavailable")
   }
-
-  return { id, output }
+  return id
 }

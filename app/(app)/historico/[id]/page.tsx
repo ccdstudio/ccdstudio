@@ -58,7 +58,7 @@ function Body({ feature, output, createdAt, credits }: { feature: string; output
         <>
           <p role="status" className={NOTICE.info}>
             Esta é a versão gerada nesta data. O seu perfil atual pode ter sido editado depois.{" "}
-            <Link href="/analises/voz" className="font-semibold underline">
+            <Link href="/analises?aba=voz" className="font-semibold underline">
               Ver perfil atual
             </Link>
           </p>
@@ -101,7 +101,7 @@ async function Result({ params }: { params: PageProps<"/historico/[id]">["params
   if (!generation) notFound()
 
   // Otimização e Roteiro já têm página própria.
-  if (generation.feature === "metadata" || generation.feature === "script") {
+  if (generation.feature === "metadata" || generation.feature === "script" || generation.feature === "plan" || generation.feature === "thumbnail" || generation.feature === "video") {
     redirect(toolInfo(generation.feature)!.href(generation.id))
   }
 

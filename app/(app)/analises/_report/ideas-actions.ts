@@ -38,7 +38,7 @@ export async function generateIdeas(): Promise<FormState> {
     return { message: "Não foi possível gerar as ideias agora. Tente novamente; nenhum crédito foi cobrado." }
   }
 
-  revalidatePath("/analises/estouros")
+  revalidatePath("/analises")
   revalidatePath("/", "layout")
   return { ok: true, message: "Ideias geradas." }
 }

@@ -13,11 +13,14 @@ export type HistoryRow = {
   correcao: string | null
   ideia: string | null
   titulo: string | null
+  principal: string | null
+  capa: string | null
+  pacote: string | null
 }
 
 export const HISTORY_SELECT =
   "id, feature, created_at, credits_charged, assunto:input->>assunto, tema:input->>tema, canal:input->>canal, " +
-  "correcao:output->correcao_principal->>titulo, ideia:output->ideias->0->>titulo, titulo:output->titulos->0->>titulo"
+  "correcao:output->correcao_principal->>titulo, ideia:output->ideias->0->>titulo, titulo:output->titulos->0->>titulo, principal:output->>titulo_principal, capa:output->>texto_capa, pacote:output->>titulo"
 
 type ToolInfo = {
   label: string
@@ -46,6 +49,21 @@ export const HISTORY_TOOLS = {
     label: "Ideias de vídeos",
     summary: (r) => (r.ideia ? `3 ideias · ${r.ideia}…` : "3 ideias de próximos vídeos"),
     href: (id) => `/historico/${id}`,
+  },
+  video: {
+    label: "Vídeo completo",
+    summary: (r) => r.pacote ?? "Vídeo completo",
+    href: (id) => `/criar/video/${id}`,
+  },
+  thumbnail: {
+    label: "Thumbnail",
+    summary: (r) => (r.capa ? `“${r.capa}”` : "Capa") + (r.titulo ? ` · ${r.titulo}` : ""),
+    href: (id) => `/criar/thumbnail/${id}`,
+  },
+  plan: {
+    label: "Plano da semana",
+    summary: (r) => r.principal ?? "Plano da semana",
+    href: (id) => `/calendario/${id}`,
   },
   voice: {
     label: "Seu jeito de falar",

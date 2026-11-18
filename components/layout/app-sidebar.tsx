@@ -15,7 +15,7 @@ import { requireUser } from "@/lib/auth/dal"
 import { createClient } from "@/lib/supabase/server"
 import { getCreditBalance, LOW_CREDITS } from "@/lib/credits/balance"
 import { getNavigation } from "@/lib/navigation"
-import { BrandIcon } from "./brand"
+import { StudioSticker } from "@/components/site/studio-logo"
 import { CreditsCard } from "./credits-card"
 import { NavUser } from "./nav-user"
 import { NavMain } from "./nav-main"
@@ -29,12 +29,13 @@ function SidebarBrand() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" className="rounded-xl" render={<Link href="/painel" />}>
-            {/* Ícone da marca sobre fundo branco, para destacar no menu marinho. */}
-            <span className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-[10px] bg-white">
-              <BrandIcon className="dark:invert-0" />
-            </span>
+            {/* Logo "adesivo" (contorno + marca preenchida), a mesma do fim da abertura da landing.
+                No menu recolhido ela encolhe para caber no espaço do ícone. */}
+            <StudioSticker className="w-14 shrink-0 text-sidebar-foreground transition-[width] group-data-[collapsible=icon]:w-8" />
             <div className="grid flex-1 text-left leading-tight">
-              <span className="truncate font-heading text-[15px] font-extrabold tracking-[-0.03em]">CCD Studio</span>
+              <span className="truncate font-heading text-[15px] font-extrabold tracking-[-0.03em]">
+                CCD <span className="text-gradient-gold">Studio</span>
+              </span>
               <span className="truncate text-xs text-sidebar-foreground/60">AM Educação</span>
             </div>
           </SidebarMenuButton>

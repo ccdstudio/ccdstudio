@@ -309,7 +309,7 @@ async function Channel({ searchParams }: { searchParams: PageProps<"/meu-canal">
       ) : null}
 
       <Link
-        href="/analises/diagnostico"
+        href="/analises?aba=diagnostico"
         className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-sm transition-colors hover:bg-muted/50"
       >
         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -318,7 +318,7 @@ async function Channel({ searchParams }: { searchParams: PageProps<"/meu-canal">
         <span className="flex flex-col">
           <strong className="font-semibold">O que fazer com esses números?</strong>
           <span className="text-muted-foreground">
-            Em Análises do canal mostramos o que corrigir primeiro, quais vídeos foram melhor que o normal e o melhor dia para publicar.
+            No Relatório do canal mostramos o que corrigir primeiro, quais vídeos foram melhor que o normal e o melhor dia para publicar.
           </span>
         </span>
       </Link>

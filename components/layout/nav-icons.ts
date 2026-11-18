@@ -11,10 +11,12 @@ import {
   SparklesIcon,
   UserCircleIcon,
   UserMultiple02Icon,
+  Video01Icon,
   YoutubeIcon,
   Stethoscope02Icon,
   Fire02Icon,
   ChartColumnIcon,
+  Analytics01Icon,
   Mic01Icon,
 } from "@hugeicons/core-free-icons"
 import type { IconKey } from "@/lib/navigation"
@@ -22,6 +24,7 @@ import type { IconKey } from "@/lib/navigation"
 // Ícones das seções: usados pelo menu (nav-main) e pelo PageHeader (marca d'água).
 export const NAV_ICONS: Record<IconKey, IconSvgElement> = {
   dashboard: DashboardSquare01Icon,
+  video: Video01Icon,
   optimize: SparklesIcon,
   script: NoteEditIcon,
   thumbnail: Image01Icon,
@@ -31,6 +34,7 @@ export const NAV_ICONS: Record<IconKey, IconSvgElement> = {
   calendar: Calendar03Icon,
   profile: UserCircleIcon,
   channel: YoutubeIcon,
+  report: Analytics01Icon,
   diagnosis: Stethoscope02Icon,
   outliers: Fire02Icon,
   rhythm: ChartColumnIcon,

@@ -17,6 +17,8 @@ const schema = z.object({
   // Opcional: sem a chave, as ferramentas de IA aparecem como "não configuradas".
   OPENAI_API_KEY: optional,
   OPENAI_MODEL: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("gpt-4.1-mini")),
+  // Modelo de imagem da Thumbnail (OpenAI Images API).
+  OPENAI_IMAGE_MODEL: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("gpt-image-1-mini")),
 })
 
 export const env = schema.parse(process.env)

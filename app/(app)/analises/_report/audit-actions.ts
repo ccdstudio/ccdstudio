@@ -49,7 +49,7 @@ export async function generateAudit(_prev: FormState, formData: FormData): Promi
     return { message: "Não foi possível gerar o diagnóstico agora. Tente novamente; nenhum crédito foi cobrado." }
   }
 
-  revalidatePath("/analises/diagnostico")
+  revalidatePath("/analises")
   revalidatePath("/", "layout")
   return { ok: true, message: "Diagnóstico pronto." }
 }
