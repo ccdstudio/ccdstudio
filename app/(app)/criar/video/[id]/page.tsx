@@ -16,7 +16,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { scriptInputSchema, scriptOutputSchema } from "@/lib/ai/prompts/script"
 import { thumbnailOutputSchema, thumbnailStoredInputSchema } from "@/lib/ai/prompts/thumbnail"
 import { videoOutputSchema, videoStoredInputSchema } from "@/lib/ai/prompts/video"
-import { signedThumbnailDownload, signedThumbnailUrls } from "@/lib/ai/run-thumbnail"
+import { downloadUrl, signedThumbnailUrls } from "@/lib/ai/run-thumbnail"
 import { metadataOutputSchema } from "@/lib/ai/schemas/metadata"
 import { requireUser } from "@/lib/auth/dal"
 import { creditsLabel, FEATURE_COSTS } from "@/lib/credits/costs"
@@ -80,13 +80,9 @@ async function Result({ params }: { params: PageProps<"/criar/video/[id]">["para
   const tOut = tRow ? thumbnailOutputSchema.safeParse(tRow.output) : null
   const tIn = tRow ? thumbnailStoredInputSchema.safeParse(tRow.input) : null
   const thumb = tOut?.success && tIn?.success ? { o: tOut.data, i: tIn.data } : null
-  const [urls, download] = thumb
-    ? await Promise.all([
-        signedThumbnailUrls([thumb.o.imagem_path]),
-        signedThumbnailDownload(thumb.o.imagem_path, `thumbnail-${slug(pack.titulo)}.jpg`),
-      ])
-    : [new Map<string, string>(), null]
+  const urls = thumb ? await signedThumbnailUrls([thumb.o.imagem_path]) : new Map<string, string>()
   const image = thumb ? urls.get(thumb.o.imagem_path) : undefined
+  const download = downloadUrl(image, `thumbnail-${slug(pack.titulo)}.jpg`)
 
   const errorOf = (key: keyof typeof pack.partes) => {
     const p = pack.partes[key]

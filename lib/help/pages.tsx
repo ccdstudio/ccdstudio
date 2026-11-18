@@ -150,7 +150,7 @@ export const PAGE_HELP = {
     whatIs:
       "Tudo o que um vídeo precisa a partir de um pedido só: título, descrição, tags e perguntas de busca, o roteiro inteiro do gancho ao pedido final, e a thumbnail pronta em 1280×720. As três partes saem combinando entre si: o roteiro abre confirmando o título, e a capa completa o título em vez de repetir.",
     howToUse:
-      "Clique em Novo vídeo completo, conte sobre o vídeo do seu jeito, escolha a duração e, se quiser, envie uma foto sua para a capa. Leva cerca de 2 minutos. Todos os vídeos completos que você gerar ficam aqui.",
+      "Clique em Novo vídeo completo, conte sobre o vídeo do seu jeito, escolha a duração e, se quiser, envie uma foto sua para a capa. Leva pouco mais de 1 minuto. Todos os vídeos completos que você gerar ficam aqui.",
     dataSource:
       "O seu pedido, o seu jeito de falar (se tiver criado) e os vídeos que mais deram certo no seu canal. Custa 4 créditos, a soma das três ferramentas. Se uma parte falhar, ela não é cobrada e dá para gerar de novo só ela.",
   },

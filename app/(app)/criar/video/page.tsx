@@ -19,7 +19,7 @@ const PAGE_SIZE = 12
 const COST = VIDEO_PACKAGE_COST
 const dateFmt = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" })
 
-type Row = { id: string; created_at: string; titulo: string | null; capa: string | null }
+type Row = { id: string; created_at: string; titulo: string | null; capa: string | null; capa_path: string | null }
 
 async function Packages({ searchParams }: { searchParams: PageProps<"/criar/video">["searchParams"] }) {
   const user = await requireUser()
@@ -31,7 +31,7 @@ async function Packages({ searchParams }: { searchParams: PageProps<"/criar/vide
   const [{ data, count }, balance] = await Promise.all([
     supabase
       .from("ai_generations")
-      .select("id, created_at, titulo:output->>titulo, capa:output->partes->thumbnail->>id", { count: "exact" })
+      .select("id, created_at, titulo:output->>titulo, capa:output->partes->thumbnail->>id, capa_path:output->>capa_path", { count: "exact" })
       .eq("user_id", user.id)
       .eq("feature", "video")
       .order("created_at", { ascending: false })
@@ -40,15 +40,16 @@ async function Packages({ searchParams }: { searchParams: PageProps<"/criar/vide
   ])
   const rows = (data ?? []) as unknown as Row[]
 
-  // Miniatura de cada pacote: o caminho da imagem está na geração da capa.
-  const capaIds = rows.flatMap((r) => (r.capa ? [r.capa] : []))
+  // Miniatura: pacotes novos já guardam o caminho da imagem; os antigos leem da geração da capa.
+  const capaIds = rows.flatMap((r) => (r.capa && !r.capa_path ? [r.capa] : []))
   const { data: capas } = capaIds.length
     ? await supabase.from("ai_generations").select("id, path:output->>imagem_path").eq("user_id", user.id).in("id", capaIds)
     : { data: [] }
   const pathById = new Map(((capas ?? []) as unknown as { id: string; path: string | null }[]).flatMap((c) => (c.path ? [[c.id, c.path] as const] : [])))
-  const urls = await signedThumbnailUrls([...pathById.values()])
+  const paths = [...rows.flatMap((r) => (r.capa_path ? [r.capa_path] : [])), ...pathById.values()]
+  const urls = await signedThumbnailUrls(paths)
   const imageOf = (r: Row) => {
-    const path = r.capa ? pathById.get(r.capa) : undefined
+    const path = r.capa_path ?? (r.capa ? pathById.get(r.capa) : undefined)
     return path ? urls.get(path) : undefined
   }
 
@@ -105,7 +106,7 @@ async function Packages({ searchParams }: { searchParams: PageProps<"/criar/vide
         <section className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border bg-card px-6 py-14 text-center">
           <p className="font-semibold">Nenhum vídeo completo ainda</p>
           <p className="mb-2 max-w-md text-sm text-muted-foreground">
-            Conte em poucas linhas sobre o vídeo que quer gravar. Em cerca de 2 minutos sai o título, a descrição, o roteiro e a capa.
+            Conte em poucas linhas sobre o vídeo que quer gravar. Em pouco mais de 1 minuto sai o título, a descrição, o roteiro e a capa.
           </p>
           {newVideo("Criar o primeiro")}
         </section>

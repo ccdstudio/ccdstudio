@@ -67,7 +67,11 @@ Gere os metadados seguindo todas as regras.`
 export type ChannelContext = { title: string; description: string } | null
 
 /** `voice`: bloco de voicePromptBlock (lib/ai/voice.ts), vazio se o usuário não tiver perfil. */
-export function buildMetadataPrompt(input: MetadataInput, channel: ChannelContext, voice = "") {
+/**
+ * `fixedTitle`: título já escolhido (Vídeo completo). Ele vira o 1º título e a descrição e as buscas giram em
+ * torno dele; os outros 9 títulos ficam como alternativas.
+ */
+export function buildMetadataPrompt(input: MetadataInput, channel: ChannelContext, voice = "", fixedTitle = "") {
   const contextoCanal = channel
     ? `CONTEXTO DO CANAL (use para acertar o público e a voz, sem citar o nome do canal nos títulos)
 Canal: ${channel.title}
@@ -81,10 +85,17 @@ Sobre o canal: ${channel.description.slice(0, 800)}`
       CONTEXTO_CANAL: contextoCanal,
       VOZ: voice,
     }),
-    userMessage: interpolatePrompt(USER, {
-      ASSUNTO: input.assunto,
-      PALAVRA_CHAVE: input.palavraChave,
-      OBJETIVO: input.objetivo,
-    }),
+    userMessage:
+      interpolatePrompt(USER, {
+        ASSUNTO: input.assunto,
+        PALAVRA_CHAVE: input.palavraChave,
+        OBJETIVO: input.objetivo,
+      }) +
+      (fixedTitle
+        ? `
+
+TÍTULO JÁ DEFINIDO: "${fixedTitle.replace(/[{}"]/g, "")}"
+Use exatamente este texto como o primeiro título (o favorito). Os outros 9 são alternativas. As primeiras linhas da descrição, as buscas-alvo e o texto da thumbnail partem dele.`
+        : ""),
   }
 }

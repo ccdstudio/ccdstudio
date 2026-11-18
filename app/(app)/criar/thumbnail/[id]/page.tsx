@@ -8,7 +8,7 @@ import { ThumbnailResultBody } from "@/components/ai/results/thumbnail-result"
 import { PageHeader } from "@/components/layout/page-header"
 import { buttonVariants } from "@/components/ui/button"
 import { thumbnailOutputSchema, thumbnailStoredInputSchema } from "@/lib/ai/prompts/thumbnail"
-import { signedThumbnailDownload, signedThumbnailUrls } from "@/lib/ai/run-thumbnail"
+import { downloadUrl, signedThumbnailUrls } from "@/lib/ai/run-thumbnail"
 import { requireUser } from "@/lib/auth/dal"
 import { createClient } from "@/lib/supabase/server"
 
@@ -44,8 +44,9 @@ async function Result({ params }: { params: PageProps<"/criar/thumbnail/[id]">["
   const i = input.data
 
   const filename = `thumbnail-${slug(i.titulo)}.jpg`
-  const [urls, download] = await Promise.all([signedThumbnailUrls([o.imagem_path]), signedThumbnailDownload(o.imagem_path, filename)])
+  const urls = await signedThumbnailUrls([o.imagem_path])
   const image = urls.get(o.imagem_path)
+  const download = downloadUrl(image, filename)
 
   return (
     <>

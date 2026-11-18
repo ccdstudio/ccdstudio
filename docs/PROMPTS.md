@@ -296,7 +296,7 @@ com a skill `yt-script`.
   - os blocos trazem `fala` e `na_tela`;
   - a entrega é explícita, com UM pedido no final.
 - **Tamanho:** é dimensionado pela duração escolhida (5, 8, 10 ou 15 min), a 150 palavras por minuto. Se vier com
-  menos de 70% das palavras, uma nova tentativa é feita.
+  menos de 60% das palavras, uma nova tentativa é feita.
 - **Contexto:** as fórmulas dos vídeos que estouraram no canal, mais o perfil de voz.
 - **Saíram** os "7 momentos" fixos do v1. A estrutura agora segue a skill.
 

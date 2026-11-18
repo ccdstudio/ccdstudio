@@ -5,7 +5,6 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
 import { outlierContext } from "@/lib/youtube/channel-context"
 import { getMyChannelData } from "@/lib/youtube/channel-data"
-import { rankTitles, words } from "@/lib/youtube/title-lint"
 import { buildMetadataPrompt, METADATA_PROMPT_VERSION } from "./prompts/metadata"
 import { buildScriptPrompt, isCompleteScript, SCRIPT_PROMPT_VERSION, scriptOutputSchema } from "./prompts/script"
 import {
@@ -30,7 +29,7 @@ type Ctx = {
   channelId: string | null
   nicho: string
   duracao: number
-  briefing: VideoBriefing
+  briefing: Omit<VideoBriefing, "titulo">
   voice: string
 }
 
@@ -38,15 +37,6 @@ const failure = (error: unknown, what: string): VideoPart => {
   if (error instanceof AiError) return { erro: error.message }
   console.error(`[ai] video: ${what} falhou`, error instanceof Error ? error.name : "erro")
   return { erro: `Não foi possível gerar ${what} agora. Nenhum crédito foi cobrado por esta parte.` }
-}
-
-/** Texto da capa sugerido pela otimização, se couber nas regras da Thumbnail (até 3 palavras, sem repetir o título). */
-function coverText(text: string, title: string) {
-  const t = text.trim()
-  const w = words(t)
-  if (!t || t.length > 40 || t.split(/\s+/).length > 3 || w.length === 0) return ""
-  const titleWords = new Set(words(title))
-  return w.length > 1 && w.every((x) => titleWords.has(x)) ? "" : t
 }
 
 async function metadataContext(channelId: string | null) {
@@ -61,9 +51,9 @@ async function scriptContext(channelId: string | null) {
   return data ? outlierContext(data.channel.title, data.videos) : ""
 }
 
-async function runMetadata(ctx: Ctx) {
+async function runMetadata(ctx: Ctx, title: string) {
   const input = { assunto: ctx.briefing.tema, palavraChave: ctx.briefing.palavra_chave, objetivo: ctx.briefing.objetivo, nicho: ctx.nicho }
-  const { system, userMessage } = buildMetadataPrompt(input, await metadataContext(ctx.channelId), ctx.voice)
+  const { system, userMessage } = buildMetadataPrompt(input, await metadataContext(ctx.channelId), ctx.voice, title)
   return runAiFeature({
     feature: "metadata",
     promptVersion: METADATA_PROMPT_VERSION,
@@ -79,7 +69,7 @@ async function runMetadata(ctx: Ctx) {
 
 async function runScript(ctx: Ctx, title: string) {
   const input = { tema: ctx.briefing.tema, publico: ctx.briefing.publico, objetivo: ctx.briefing.objetivo, duracao: ctx.duracao, nicho: ctx.nicho }
-  // O roteiro abre confirmando a promessa do título que a otimização escolheu: título e gancho são uma peça só.
+  // O roteiro abre confirmando a promessa do título: título e gancho são uma peça só.
   const context = [
     await scriptContext(ctx.channelId),
     `TÍTULO JÁ ESCOLHIDO PARA ESTE VÍDEO: "${title}"\nUse esse título como titulo_sugerido. Os ganchos confirmam a promessa dele logo na primeira frase.`,
@@ -110,7 +100,8 @@ function runCover(ctx: Ctx, title: string, text: string, foto: string) {
 }
 
 /**
- * Vídeo completo: briefing (grátis) → otimização → roteiro e capa em paralelo → registro do pacote.
+ * Vídeo completo: briefing (grátis, já com o título final) → otimização, roteiro e capa em paralelo → registro
+ * do pacote. O tempo total é o do briefing + a parte mais lenta (o roteiro).
  * Cada parte cobra e grava a própria geração; a que falhar não cobra e fica com a mensagem de erro.
  * Se nada der certo, lança o erro e nada é gravado.
  */
@@ -127,25 +118,21 @@ export async function runVideoPackage(opts: { userId: string; channelId: string 
     schema: videoBriefingSchema,
     validate: isCompleteBriefing,
     maxOutputTokens: 3000,
+    // Organizar o pedido é tarefa curta: sem raciocínio longo antes de tudo começar.
+    effort: "minimal",
     retries: 1,
   })
   const ctx: Ctx = { userId: opts.userId, channelId: opts.channelId, nicho: input.nicho, duracao: input.duracao, briefing, voice }
 
-  let title = briefing.titulo_provisorio
-  let text = ""
-  let metadata: VideoPart
-  try {
-    const { id, output } = await runMetadata(ctx)
-    metadata = { id }
-    title = rankTitles(output.titulos, output.thumbnail.texto)[0]?.titulo ?? output.titulos[0]?.titulo ?? title
-    text = coverText(output.thumbnail.texto, title)
-  } catch (error) {
-    metadata = failure(error, "a otimização")
-  }
-
-  const [script, thumbnail] = await Promise.allSettled([runScript(ctx, title), runCover(ctx, title, text, input.foto)])
+  const title = briefing.titulo
+  const [metadata, script, thumbnail] = await Promise.allSettled([
+    runMetadata(ctx, title),
+    runScript(ctx, title),
+    // Texto da capa em branco: a ideia da capa sugere um que completa o título.
+    runCover(ctx, title, "", input.foto),
+  ])
   const partes = {
-    metadata,
+    metadata: metadata.status === "fulfilled" ? { id: metadata.value.id } : failure(metadata.reason, "a otimização"),
     script: script.status === "fulfilled" ? { id: script.value.id } : failure(script.reason, "o roteiro"),
     thumbnail: thumbnail.status === "fulfilled" ? { id: thumbnail.value.id } : failure(thumbnail.reason, "a capa"),
   }
@@ -154,7 +141,13 @@ export async function runVideoPackage(opts: { userId: string; channelId: string 
     throw reason instanceof AiError ? reason : new AiError("unavailable")
   }
 
-  const output: VideoOutput = { briefing, titulo: title, texto_capa: text, partes }
+  const output: VideoOutput = {
+    briefing,
+    titulo: title,
+    texto_capa: "",
+    capa_path: thumbnail.status === "fulfilled" ? thumbnail.value.output.imagem_path : undefined,
+    partes,
+  }
   const { foto, ...rest } = input
   const id = await recordGeneration({
     userId: opts.userId,
@@ -194,12 +187,16 @@ export async function retryVideoPackagePart(opts: {
   const { titulo, texto_capa } = opts.output
   const result =
     opts.part === "metadata"
-      ? await runMetadata(ctx)
+      ? await runMetadata(ctx, titulo)
       : opts.part === "script"
         ? await runScript(ctx, titulo)
         : await runCover(ctx, titulo, texto_capa, "")
 
-  const output: VideoOutput = { ...opts.output, partes: { ...opts.output.partes, [opts.part]: { id: result.id } } }
+  const output: VideoOutput = {
+    ...opts.output,
+    ...(opts.part === "thumbnail" && "imagem_path" in result.output ? { capa_path: result.output.imagem_path } : {}),
+    partes: { ...opts.output.partes, [opts.part]: { id: result.id } },
+  }
   const { error } = await createAdminClient()
     .from("ai_generations")
     // Gerações são só leitura nos tipos (histórico imutável); a exceção é o registro do pacote (custo 0),

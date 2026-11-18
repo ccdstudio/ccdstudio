@@ -122,7 +122,9 @@ export async function aiJson<S extends z.ZodType>(opts: JsonOptions<S>): Promise
 
       const data = response.output_parsed as z.infer<S> | null
       if (data && (!opts.validate || opts.validate(data))) return { data, usage }
-      console.warn(`[ai] label=${opts.label} saída inválida (tentativa ${attempt}/${attempts})`)
+      // Motivo da nova tentativa: saída vazia/cortada (status) × reprovada na validação (contagens, tamanho).
+      const reason = data ? "validacao" : `vazia status=${response.status ?? "?"}`
+      console.warn(`[ai] label=${opts.label} saída inválida motivo=${reason} (tentativa ${attempt}/${attempts})`)
     } catch (error) {
       usage.ms += Date.now() - started
       logFailure(opts.label, model, error, Date.now() - started)

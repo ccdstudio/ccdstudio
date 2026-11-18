@@ -33,7 +33,7 @@ const STEPS: WizardStep[] = [
   },
 ]
 
-const PHASES = ["Entendendo o vídeo", "Escolhendo título e SEO", "Escrevendo o roteiro", "Desenhando a capa", "Juntando tudo"]
+const PHASES = ["Entendendo o vídeo e escolhendo o título", "Escrevendo descrição e SEO", "Desenhando a capa", "Escrevendo o roteiro", "Juntando tudo"]
 
 type Props = { niche: string; cost: string; blocked: string | null; prefill?: string }
 
@@ -49,7 +49,7 @@ export function VideoWizard({ niche, cost, blocked, prefill }: Props) {
       blocked={blocked}
       submit={generateVideoPackage}
       phases={PHASES}
-      estimatedMs={150_000}
+      estimatedMs={80_000}
       resultHref={(id) => `/criar/video/${id}`}
     />
   )

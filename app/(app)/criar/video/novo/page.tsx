@@ -11,7 +11,7 @@ import { NOTICE } from "@/lib/status-colors"
 import { VideoWizard } from "./video-wizard"
 
 export const metadata: Metadata = { title: "Novo vídeo completo · CCD Studio" }
-// Briefing + otimização + roteiro e capa em paralelo: passa de 2 minutos.
+// Briefing + otimização, roteiro e capa em paralelo: ~1 min 15 s, com folga para nova tentativa.
 export const maxDuration = 300
 
 const HEADER = {

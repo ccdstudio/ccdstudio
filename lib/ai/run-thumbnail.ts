@@ -1,5 +1,6 @@
 import "server-only"
 import { randomUUID } from "node:crypto"
+import { cacheLife } from "next/cache"
 import { FEATURE_COSTS } from "@/lib/credits/costs"
 import { createAdminClient } from "@/lib/supabase/admin"
 import {
@@ -35,15 +36,17 @@ export async function runThumbnail(opts: { userId: string; input: ThumbnailInput
     schema: thumbnailConceptSchema,
     validate: (c) => isCompleteConcept(c, opts.input.titulo, opts.input.texto_capa),
     maxOutputTokens: 3000,
+    // Descrever uma cena não pede raciocínio: "minimal" corta a maior parte do tempo desta etapa.
+    effort: "minimal",
     retries: 1,
   })
 
-  const { png, usage: imageUsage } = await generateImage({
+  const { image, usage: imageUsage } = await generateImage({
     label: "thumbnail-image",
     prompt: concept.prompt_imagem,
     reference: opts.input.foto || undefined,
   })
-  const jpeg = await toYoutubeThumbnail(png)
+  const jpeg = await toYoutubeThumbnail(image)
 
   const path = `${opts.userId}/${randomUUID()}.jpg`
   const storage = createAdminClient().storage.from(THUMBNAILS_BUCKET)
@@ -75,15 +78,25 @@ export async function runThumbnail(opts: { userId: string; input: ThumbnailInput
   }
 }
 
-/** URLs assinadas (1 h) das capas. Chamar só com caminhos de gerações já lidas do próprio usuário. */
-export async function signedThumbnailUrls(paths: string[]) {
-  if (!paths.length) return new Map<string, string>()
-  const { data } = await createAdminClient().storage.from(THUMBNAILS_BUCKET).createSignedUrls(paths, 60 * 60)
-  return new Map((data ?? []).flatMap((d) => (d.path && d.signedUrl ? [[d.path, d.signedUrl] as const] : [])))
+/**
+ * URL assinada (1 h) de uma capa, guardada em cache por no máximo 50 min: toda URL entregue ainda vale
+ * pelo menos 10 min, e abrir a página de novo não chama o Storage. Chave = caminho (já inclui o id do dono).
+ */
+async function signedThumbnailUrl(path: string) {
+  "use cache"
+  cacheLife({ stale: 300, revalidate: 1800, expire: 3000 })
+  const { data } = await createAdminClient().storage.from(THUMBNAILS_BUCKET).createSignedUrl(path, 60 * 60)
+  return data?.signedUrl ?? null
 }
 
-/** URL assinada (1 h) que baixa o arquivo com o nome dado, em vez de abrir no navegador. */
-export async function signedThumbnailDownload(path: string, filename: string) {
-  const { data } = await createAdminClient().storage.from(THUMBNAILS_BUCKET).createSignedUrl(path, 60 * 60, { download: filename })
-  return data?.signedUrl ?? null
+/** URLs assinadas das capas. Chamar só com caminhos de gerações já lidas do próprio usuário. */
+export async function signedThumbnailUrls(paths: string[]) {
+  const unique = [...new Set(paths)]
+  const urls = await Promise.all(unique.map((p) => signedThumbnailUrl(p)))
+  return new Map(unique.flatMap((p, i) => (urls[i] ? [[p, urls[i]] as const] : [])))
+}
+
+/** A mesma URL assinada, mas que baixa o arquivo com o nome dado em vez de abrir no navegador. */
+export function downloadUrl(signedUrl: string | undefined, filename: string) {
+  return signedUrl ? `${signedUrl}&download=${encodeURIComponent(filename)}` : null
 }

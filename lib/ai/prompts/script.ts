@@ -34,13 +34,13 @@ export function cleanHook(texto: string, formula: string) {
   return t.toLowerCase().startsWith(`${formula.toLowerCase()}:`) ? t.slice(formula.length + 1).trim() : t
 }
 
-/** Completo e com pelo menos 70% das palavras da duração alvo (150 por minuto). */
+/** Completo e com pelo menos 60% das palavras da duração alvo (150 por minuto). */
 export const isCompleteScript = (o: ScriptOutput, durationMin?: number) =>
   o.ganchos.length >= 3 &&
   o.blocos.length >= 3 &&
   o.blocos.every((b) => b.fala.trim() && b.na_tela.trim()) &&
   !JSON.stringify(o).includes("{{") &&
-  (!durationMin || spokenWords(o, o.ganchos[0]?.texto ?? "") >= durationMin * 150 * 0.7)
+  (!durationMin || spokenWords(o, o.ganchos[0]?.texto ?? "") >= durationMin * 150 * 0.6)
 
 const isAccounting = (niche: string) => /contab|contador|fiscal|tribut|imposto|finan/i.test(niche)
 

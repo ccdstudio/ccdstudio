@@ -26,7 +26,16 @@ export async function generateImage(opts: { label: string; prompt: string; refer
   const model = env.OPENAI_IMAGE_MODEL
   const started = Date.now()
   try {
-    const common = { model, prompt: opts.prompt, size: "1536x1024" as const, quality: "medium" as const, output_format: "png" as const, n: 1 }
+    // JPEG direto da OpenAI: arquivo bem menor que PNG para baixar; o sharp só redimensiona.
+    const common = {
+      model,
+      prompt: opts.prompt,
+      size: "1536x1024" as const,
+      quality: "medium" as const,
+      output_format: "jpeg" as const,
+      output_compression: 92,
+      n: 1,
+    }
     const response = opts.reference
       ? await (async () => {
           const { buffer, type } = fromDataUrl(opts.reference!)
@@ -45,7 +54,7 @@ export async function generateImage(opts: { label: string; prompt: string; refer
     }
     console.info(`[ai] label=${opts.label} model=${model} in=${usage.inputTokens} out=${usage.outputTokens} ms=${ms} ref=${Boolean(opts.reference)}`)
     if (!b64) throw new AiError("invalid_output")
-    return { png: Buffer.from(b64, "base64"), usage }
+    return { image: Buffer.from(b64, "base64"), usage }
   } catch (error) {
     console.error(`[ai] label=${opts.label} model=${model} ms=${Date.now() - started} falha=${error instanceof Error ? error.name : "erro"}`)
     throw toAiError(error)
@@ -53,6 +62,6 @@ export async function generateImage(opts: { label: string; prompt: string; refer
 }
 
 /** Corta para o formato do YouTube (16:9, 1280×720) pelo centro e salva em JPEG. */
-export function toYoutubeThumbnail(png: Buffer) {
-  return sharp(png).resize(1280, 720, { fit: "cover", position: "centre" }).jpeg({ quality: 88, mozjpeg: true }).toBuffer()
+export function toYoutubeThumbnail(image: Buffer) {
+  return sharp(image).resize(1280, 720, { fit: "cover", position: "centre" }).jpeg({ quality: 88, mozjpeg: true }).toBuffer()
 }
