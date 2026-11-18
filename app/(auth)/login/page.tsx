@@ -9,8 +9,11 @@ export default function LoginPage() {
   return (
     <>
       <div className="flex flex-col gap-2">
-        <span className="label">Acesso restrito</span>
-        <h1 className="text-[34px] leading-[1.2] font-extrabold tracking-[-0.04em]">Entrar</h1>
+        <span className="flex items-center gap-2 font-mono text-[10px] tracking-[0.3em] text-ccd-teal-light/80 uppercase">
+          <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-ccd-gold-light" />
+          Acesso restrito
+        </span>
+        <h1 className="text-3xl font-bold text-white">Entrar</h1>
         <p className="text-sm text-muted-foreground">Entre com o Google (mesmo e-mail da sua conta) ou com o e-mail e a senha fornecidos pelo administrador.</p>
       </div>
       <Suspense>
