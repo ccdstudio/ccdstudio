@@ -309,9 +309,9 @@ perfil de voz quando ele existe.
 
 | Feature | Arquivo | Skill de origem | Custo | Tela |
 |---|---|---|---|---|
-| Perfil de voz | `lib/ai/prompts/voice.ts` | `templates/voice.md` | grátis | Análises do canal → Seu jeito de falar |
-| Próximas ideias | `lib/ai/prompts/ideas.ts` | `yt-viral` | 1 crédito | Análises do canal → Vídeos que estouraram |
-| Diagnóstico | `lib/ai/prompts/audit.ts` | `yt-audit` | 1 crédito (2 com miniaturas) | Análises do canal → Diagnóstico do canal |
+| Perfil de voz | `lib/ai/prompts/voice.ts` | `templates/voice.md` | grátis | Relatório do canal → aba Seu jeito de falar |
+| Próximas ideias | `lib/ai/prompts/ideas.ts` | `yt-viral` | 1 crédito | Relatório do canal → aba Vídeos que estouraram |
+| Diagnóstico | `lib/ai/prompts/audit.ts` | `yt-audit` | 1 crédito (2 com miniaturas) | Relatório do canal → aba Diagnóstico |
 
 - **Perfil de voz:** deduz nicho, público, tom, os termos que o criador usa e os que evita, o que ele não promete e o
   formato. Só deduz o que está nos textos do canal; o resto fica vazio. O bloco gerado entra em todos os prompts

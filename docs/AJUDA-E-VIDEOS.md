@@ -40,10 +40,7 @@ aberto.
 | `usuarios` | `/admin/usuarios` |
 | `planos` | `/conta/planos` |
 | `meu-canal` | `/meu-canal` |
-| `diagnostico` | `/analises/diagnostico` |
-| `estouros` | `/analises/estouros` |
-| `ritmo` | `/analises/ritmo` |
-| `voz` | `/analises/voz` |
+| `relatorio` | `/analises` (Relatório do canal: abas Diagnóstico, Estouros, Ritmo e Voz em `?aba=`) |
 | `otimizacao` | `/criar/otimizacao` |
 | `otimizacao-nova` | `/criar/otimizacao/nova` |
 | `otimizacao-resultado` | `/criar/otimizacao/[id]` |

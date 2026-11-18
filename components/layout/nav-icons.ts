@@ -15,6 +15,7 @@ import {
   Stethoscope02Icon,
   Fire02Icon,
   ChartColumnIcon,
+  Analytics01Icon,
   Mic01Icon,
 } from "@hugeicons/core-free-icons"
 import type { IconKey } from "@/lib/navigation"
@@ -31,6 +32,7 @@ export const NAV_ICONS: Record<IconKey, IconSvgElement> = {
   calendar: Calendar03Icon,
   profile: UserCircleIcon,
   channel: YoutubeIcon,
+  report: Analytics01Icon,
   diagnosis: Stethoscope02Icon,
   outliers: Fire02Icon,
   rhythm: ChartColumnIcon,

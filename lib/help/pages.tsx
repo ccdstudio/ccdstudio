@@ -56,8 +56,8 @@ export const PAGE_HELP = {
       <>
         Passe o mouse (ou toque) no <strong>?</strong> ao lado de cada dado para entender o que ele significa. Para saber o que
         fazer com esses números, veja{" "}
-        <Link href="/analises/diagnostico" className={link}>
-          Análises do canal
+        <Link href="/analises?aba=diagnostico" className={link}>
+          Relatório do canal
         </Link>
         .
       </>
@@ -65,53 +65,33 @@ export const PAGE_HELP = {
     dataSource:
       "Buscamos direto no YouTube, sem precisar da sua senha, e guardamos aqui. Tudo se atualiza sozinho a cada 24 horas; o botão Atualizar busca de novo na hora.",
   },
-  diagnostico: {
-    title: "Diagnóstico do canal",
+  relatorio: {
+    title: "Relatório do canal",
     whatIs: (
       <>
-        Uma leitura do seu canal que termina em <strong>UMA coisa para corrigir primeiro</strong>, 3 coisas que já funcionam
-        (para você não estragar) e o que não fazer agora.
+        Tudo sobre o seu canal num lugar só. No topo, 4 números que resumem o canal. Embaixo, uma aba para cada parte:
+        <br />
+        <strong>Diagnóstico</strong>: UMA coisa para corrigir primeiro, 3 que já funcionam e o que não fazer agora, mais a
+        nota de cada título (clique num título para ver o que está bom e o que melhorar).
+        <br />
+        <strong>Vídeos que estouraram</strong>: os vídeos que foram muito melhor que o normal do SEU canal (3× = 3 vezes as
+        views de um vídeo típico seu) e o que eles têm em comum.
+        <br />
+        <strong>Melhor dia e ritmo</strong>: com que regularidade você publica e qual dia da semana rende mais.
+        <br />
+        <strong>Seu jeito de falar</strong>: com quem você fala, o seu tom e as suas palavras, usado por todas as gerações de IA.
       </>
     ),
-    howToUse:
-      "Clique em Gerar diagnóstico. Leva até 1 minuto. Foque na correção principal durante a semana; os outros itens são para você não mexer no que está dando certo.",
-    dataSource:
-      "Os títulos, as datas e as views dos seus vídeos recentes (dados públicos do YouTube). A IA também pode olhar as suas miniaturas, se você marcar essa opção.",
-  },
-  estouros: {
-    title: "Vídeos que estouraram",
-    whatIs: (
-      <>
-        Comparamos cada vídeo com o <strong>normal do SEU canal</strong>, não com canais maiores. Um vídeo com{" "}
-        <strong>3×</strong> teve 3 vezes as views de um vídeo típico seu.
-      </>
-    ),
-    howToUse:
-      "Olhe o que os vídeos do topo têm em comum (o jeito do título, a duração, o dia). Repita o que funcionou. Se quiser, peça à IA 3 ideias de próximos vídeos nesse estilo.",
-    dataSource:
-      "Os seus 50 vídeos mais recentes, com as views públicas do YouTube. Shorts e vídeos longos são comparados separadamente, porque têm públicos diferentes.",
-  },
-  ritmo: {
-    title: "Melhor dia e ritmo",
-    whatIs:
-      "Um retrato de como você publica: o intervalo entre vídeos, as semanas em que saiu vídeo e o dia da semana que costuma dar mais views.",
-    howToUse:
-      "Constância vale mais que quantidade: um vídeo a cada 15 dias, sempre, rende mais que seis numa semana e depois um mês parado. Use o melhor dia como dia fixo de publicação.",
-    dataSource:
-      "As datas e as views públicas dos seus 50 vídeos mais recentes, no horário de Brasília. Tudo calculado aqui, sem IA e sem gastar créditos.",
-  },
-  voz: {
-    title: "Seu jeito de falar",
-    whatIs:
-      "Um resumo de como você se comunica: com quem você fala, o seu tom, as palavras que são suas e as que você nunca usa.",
     howToUse: (
       <>
-        Clique em <strong>Gerar do canal</strong> (é grátis) e depois revise. Se algo não for a sua cara, clique em{" "}
-        <strong>Editar</strong> e ajuste. Daí em diante, toda geração de IA (otimização, roteiro, ideias) usa este perfil.
+        Comece pelo <strong>Próximo passo</strong> (aparece depois do primeiro diagnóstico). Clique em{" "}
+        <strong>Gerar diagnóstico</strong> para a leitura com IA; em Vídeos que estouraram, peça 3 ideias de próximos vídeos;
+        em Seu jeito de falar, clique em <strong>Gerar do canal</strong> (grátis) e revise. Constância vale mais que
+        quantidade: use o melhor dia como dia fixo de publicação.
       </>
     ),
     dataSource:
-      "O nome, a descrição, as palavras-chave e os títulos dos vídeos do seu canal no YouTube. A IA só deduz o que está escrito ali; o que não dá para saber fica em branco para você completar.",
+      "Os títulos, as datas e as views públicas dos seus 50 vídeos mais recentes no YouTube (horário de Brasília). Os números são calculados aqui, sem IA e sem gastar créditos; só o diagnóstico e as ideias usam IA. A IA também pode olhar as suas miniaturas, se você marcar essa opção.",
   },
   otimizacao: {
     title: "Otimização de vídeo",

@@ -46,7 +46,7 @@ async function Profile() {
           title="Seu jeito de falar"
           description="Ensina a IA a escrever como você fala. Fica em Análises do canal."
           actions={
-            <Link href="/analises/voz" className={buttonVariants({ variant: "outline", size: "sm" })}>
+            <Link href="/analises?aba=voz" className={buttonVariants({ variant: "outline", size: "sm" })}>
               Abrir
             </Link>
           }

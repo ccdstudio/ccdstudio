@@ -12,7 +12,7 @@ import { engagement, uploadRhythm } from "@/lib/youtube/channel-insights"
 const clean = (xs: string[], max: number) => [...new Set(xs.map((x) => x.trim()).filter(Boolean))].slice(0, max)
 
 function revalidateVoice() {
-  revalidatePath("/analises/voz")
+  revalidatePath("/analises")
 }
 
 /** Gera o perfil de voz a partir do canal vinculado (0 créditos, fica no histórico). */

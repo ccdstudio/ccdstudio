@@ -9,7 +9,7 @@ import { FormDialog } from "@/components/shared/form-dialog"
 import { DialogActions, useOnSuccess } from "@/components/shared/form-helpers"
 import { Button } from "@/components/ui/button"
 import type { FormState } from "@/lib/auth/schemas"
-import { generateAudit } from "./actions"
+import { generateAudit } from "./audit-actions"
 
 function AuditForm({ base, extra, close }: { base: number; extra: number; close: () => void }) {
   const [state, action, pending] = useActionState<FormState, FormData>(generateAudit, {})

@@ -15,6 +15,7 @@ export type IconKey =
   | "calendar"
   | "profile"
   | "channel"
+  | "report"
   | "diagnosis"
   | "outliers"
   | "rhythm"
@@ -57,10 +58,8 @@ const navigation: NavGroup[] = [
     // Funcionalidades que usam os dados do canal + regras da skill + IA (cada uma numa página).
     label: "Análises do canal",
     items: [
-      { title: "Diagnóstico do canal", href: "/analises/diagnostico", icon: "diagnosis" },
-      { title: "Vídeos que estouraram", href: "/analises/estouros", icon: "outliers" },
-      { title: "Melhor dia e ritmo", href: "/analises/ritmo", icon: "rhythm" },
-      { title: "Seu jeito de falar", href: "/analises/voz", icon: "voice" },
+      // Uma página com abas: diagnóstico, estouros, ritmo e voz (app/(app)/analises).
+      { title: "Relatório do canal", href: "/analises", icon: "report" },
     ],
   },
   {
