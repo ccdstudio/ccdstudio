@@ -1,4 +1,4 @@
-import { StudioLogo, StudioMark } from "./studio-logo"
+import { StudioSticker } from "./studio-logo"
 
 /** Tempo (s) em que a cortina começa a subir — a hero entra a partir daqui. */
 export const INTRO_DELAY = 1.55
@@ -17,12 +17,7 @@ export function LpIntro() {
       <div className="absolute inset-0 lp-glows" />
       <div className="absolute inset-0 lp-grid" />
       {/* a logo se desenha em linha e, no fim, ganha o preenchimento da marca */}
-      <div className="relative w-40 md:w-52">
-        <StudioLogo mode="draw" className="w-full text-white" />
-        <div className="lp-intro-fill absolute inset-0 px-[4.15%] py-[7.3%]">
-          <StudioMark className="size-full" />
-        </div>
-      </div>
+      <StudioSticker outlineMode="draw" fillClassName="lp-intro-fill" className="w-40 text-white md:w-52" />
       <p className="lp-intro-text relative mt-8 text-4xl font-bold md:text-5xl">
         CCD <span className="text-gradient-gold">Studio</span>
       </p>

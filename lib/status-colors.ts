@@ -56,3 +56,6 @@ export const CHECK_ICON = {
 
 /** Faixa da nota de gancho (hook-score): forte ≥ 58, ok ≥ 42, fraco abaixo. */
 export const HOOK_BAND_TONE = { forte: tone.emerald, ok: tone.amber, fraco: tone.red } as const
+
+/** Formatos do Plano da semana: principal em azul (o vídeo da semana), simples em índigo, Shorts em âmbar. */
+export const PLAN_FORMAT_TONE = { principal: tone.blue, simples: tone.indigo, short: tone.amber } as const

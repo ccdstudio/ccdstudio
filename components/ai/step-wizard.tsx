@@ -9,6 +9,7 @@ import { ArrowLeft01Icon, ArrowRight01Icon, Edit02Icon, SparklesIcon } from "@hu
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { GenerationProgress, type GenerationStatus } from "./generation-progress"
+import { ImageStep } from "./image-step"
 
 // Formulário em etapas das gerações com IA (uma pergunta por tela) + tela de geração animada.
 // Usado por Otimização de vídeo e Roteiro. Os dados ficam no estado; o envio chama a server action com um objeto.
@@ -18,7 +19,8 @@ export type WizardStep = {
   /** Pergunta grande, em linguagem simples. */
   question: string
   help?: string
-  kind: "text" | "textarea" | "choice"
+  /** "image": foto opcional (data URL reduzido no navegador). */
+  kind: "text" | "textarea" | "choice" | "image"
   placeholder?: string
   /** Chips que preenchem o campo com um clique. */
   suggestions?: string[]
@@ -254,6 +256,11 @@ export function StepWizard(props: Props) {
                       )
                     })}
                   </div>
+                ) : step.kind === "image" ? (
+                  <div className="flex flex-col gap-2">
+                    <ImageStep value={values[step.name] ?? ""} onChange={(v) => set(step.name, v)} label={step.question} />
+                    {errors[step.name] ? <p className="text-sm font-medium text-destructive">{errors[step.name]}</p> : null}
+                  </div>
                 ) : (
                   <div className="flex flex-col gap-2">
                     {step.kind === "textarea" ? (
@@ -376,7 +383,18 @@ function Review({
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
               <dt className="label">{s.reviewLabel}</dt>
               <dd className={cn("text-sm break-words", errors[s.name] && "text-destructive")}>
-                {values[s.name] ? (s.format ? s.format(values[s.name]) : values[s.name]) : "—"}
+                {s.kind === "image" ? (
+                  values[s.name] ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={values[s.name]} alt="Sua foto" className="size-16 rounded-md object-cover" />
+                  ) : (
+                    "sem foto"
+                  )
+                ) : values[s.name] ? (
+                  s.format ? s.format(values[s.name]) : values[s.name]
+                ) : (
+                  "—"
+                )}
                 {errors[s.name] ? <span className="block text-xs font-medium">{errors[s.name]}</span> : null}
               </dd>
             </div>

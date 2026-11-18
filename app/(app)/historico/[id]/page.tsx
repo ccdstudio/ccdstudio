@@ -101,7 +101,7 @@ async function Result({ params }: { params: PageProps<"/historico/[id]">["params
   if (!generation) notFound()
 
   // Otimização e Roteiro já têm página própria.
-  if (generation.feature === "metadata" || generation.feature === "script") {
+  if (generation.feature === "metadata" || generation.feature === "script" || generation.feature === "plan" || generation.feature === "thumbnail" || generation.feature === "video") {
     redirect(toolInfo(generation.feature)!.href(generation.id))
   }
 

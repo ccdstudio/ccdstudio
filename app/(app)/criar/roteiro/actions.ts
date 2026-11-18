@@ -6,23 +6,13 @@ import type { WizardResult } from "@/components/ai/step-wizard"
 import { buildScriptPrompt, isCompleteScript, SCRIPT_PROMPT_VERSION, scriptInputSchema, scriptOutputSchema } from "@/lib/ai/prompts/script"
 import { AiError, runAiFeature } from "@/lib/ai/run-feature"
 import { getVoiceProfile, voicePromptBlock } from "@/lib/ai/voice"
-import { outliers } from "@/lib/youtube/channel-insights"
+import { outlierContext } from "@/lib/youtube/channel-context"
 import { getMyChannelData } from "@/lib/youtube/channel-data"
 
 /** Fórmulas dos estouros do canal, para o prompt priorizar o que já funcionou ali. */
 async function channelContext(channelId: string | null) {
   const data = await getMyChannelData(channelId)
-  if (!data) return ""
-  const o = outliers(data.videos)
-  const hits = [...o.longos.top, ...o.shorts.top].filter((v) => v.multiple >= 1.5 && v.formula.id !== "none")
-  const formulas = [...new Set(hits.map((v) => v.formula.nome))].slice(0, 4)
-  return [
-    `DADOS DO CANAL (${data.channel.title})`,
-    formulas.length ? `Fórmulas dos vídeos que mais superaram a mediana do canal: ${formulas.join(", ")}.` : "",
-    hits.length ? `Exemplos de títulos que estouraram: ${hits.slice(0, 3).map((h) => `"${h.title}"`).join("; ")}.` : "",
-  ]
-    .filter(Boolean)
-    .join("\n")
+  return data ? outlierContext(data.channel.title, data.videos) : ""
 }
 
 /** Chamada pelo formulário em etapas (StepWizard). Sucesso devolve o id; o cliente leva ao resultado. */

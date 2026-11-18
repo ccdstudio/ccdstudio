@@ -45,4 +45,4 @@ Material de terceiros mantido no repositório para consulta e reaproveitamento n
 | `yt-script/hooks.json` (21 fórmulas) | `lib/youtube/formulas.ts` | Nomes, exemplos e regex em pt-BR, com fronteira de palavra que entende acentos |
 | `yt-script/hookscore.py` | `lib/youtube/hook-score.ts` | Listas em pt-BR; faixas recalibradas (forte ≥ 58, ok ≥ 42) |
 | `yt-viral/swipe.py` | `lib/youtube/channel-insights.ts` (`outliers`) | Aplicado ao próprio canal, com Shorts e longos separados e no mínimo 4 vídeos |
-| `yt-audit`, `yt-viral`, `yt-script`, `templates/voice.md` | `lib/ai/prompts/{audit,ideas,script,voice}.ts` | Ver `docs/PROMPTS.md` |
+| `yt-audit`, `yt-viral`, `yt-script`, `yt-plan`, `templates/voice.md` | `lib/ai/prompts/{audit,ideas,script,plan,voice}.ts` | Ver `docs/PROMPTS.md` |

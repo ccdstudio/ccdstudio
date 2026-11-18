@@ -6,6 +6,7 @@ import type { AppRole } from "@/lib/supabase/database.types"
 
 export type IconKey =
   | "dashboard"
+  | "video"
   | "optimize"
   | "script"
   | "thumbnail"
@@ -55,19 +56,22 @@ const navigation: NavGroup[] = [
     ],
   },
   {
-    // Funcionalidades que usam os dados do canal + regras da skill + IA (cada uma numa página).
-    label: "Análises do canal",
+    // Ler o canal e planejar a semana: dados do canal + regras da skill + IA.
+    label: "Estratégia do canal",
     items: [
       // Uma página com abas: diagnóstico, estouros, ritmo e voz (app/(app)/analises).
       { title: "Relatório do canal", href: "/analises", icon: "report" },
+      // Plano da semana (skill yt-plan): app/(app)/calendario.
+      { title: "Calendário editorial", href: "/calendario", icon: "calendar" },
     ],
   },
   {
     label: "Criar",
     items: [
+      { title: "Vídeo completo", href: "/criar/video", icon: "video" },
       { title: "Otimização de vídeo", href: "/criar/otimizacao", icon: "optimize" },
       { title: "Roteiro", href: "/criar/roteiro", icon: "script" },
-      { title: "Thumbnail", href: "/criar/thumbnail", icon: "thumbnail", soon: true },
+      { title: "Thumbnail", href: "/criar/thumbnail", icon: "thumbnail" },
       { title: "Shorts", href: "/criar/shorts", icon: "shorts", soon: true },
       { title: "Capítulos", href: "/criar/capitulos", icon: "chapters", soon: true },
     ],
@@ -76,7 +80,6 @@ const navigation: NavGroup[] = [
     label: "Conteúdo",
     items: [
       { title: "Histórico", href: "/historico", icon: "history" },
-      { title: "Calendário editorial", href: "/calendario", icon: "calendar", soon: true },
     ],
   },
 ]

@@ -151,7 +151,8 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong>OpenAI:</strong> processamento por inteligência artificial do conteúdo que você envia às
-              ferramentas, para gerar os resultados solicitados.
+              ferramentas, para gerar os resultados solicitados. Na ferramenta Thumbnail, se você enviar uma foto sua, ela
+              é usada só para gerar aquela imagem e não fica guardada no CCD Studio; a capa gerada fica salva na sua conta.
             </li>
             <li>
               <strong>Provedor de hospedagem</strong> da aplicação e serviços de registro de erros.

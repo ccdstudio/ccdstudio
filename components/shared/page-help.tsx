@@ -14,7 +14,9 @@ const LABEL = "Como funciona esta página"
  * Nunca abre sozinho. O vídeo (iframe) só é montado com o modal aberto, então para ao fechar.
  */
 export function PageHelp({ help }: { help: HelpKey }) {
-  const page: Help = PAGE_HELP[help]
+  const page: Help | undefined = PAGE_HELP[help]
+  // Chave sem texto de ajuda (ex.: módulo desatualizado no dev): esconde o botão em vez de quebrar a página.
+  if (!page) return null
   const embed = youtubeEmbedUrl(page.video)
 
   return (

@@ -11,6 +11,7 @@ import {
   SparklesIcon,
   UserCircleIcon,
   UserMultiple02Icon,
+  Video01Icon,
   YoutubeIcon,
   Stethoscope02Icon,
   Fire02Icon,
@@ -23,6 +24,7 @@ import type { IconKey } from "@/lib/navigation"
 // Ícones das seções: usados pelo menu (nav-main) e pelo PageHeader (marca d'água).
 export const NAV_ICONS: Record<IconKey, IconSvgElement> = {
   dashboard: DashboardSquare01Icon,
+  video: Video01Icon,
   optimize: SparklesIcon,
   script: NoteEditIcon,
   thumbnail: Image01Icon,

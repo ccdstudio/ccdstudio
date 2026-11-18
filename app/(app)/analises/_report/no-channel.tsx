@@ -23,4 +23,4 @@ export function NoChannel({ what }: { what: string }) {
   )
 }
 
-export const ANALYSIS_EYEBROW = "Análises do canal"
+export const ANALYSIS_EYEBROW = "Estratégia do canal"

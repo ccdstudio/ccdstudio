@@ -196,3 +196,30 @@ export function StudioWordmark({
     </span>
   )
 }
+
+/**
+ * Logo "adesivo": o contorno em linha (currentColor) com a marca preenchida por dentro — o estado final
+ * da abertura da landing. `fill` pode receber a animação de entrada (ex.: .lp-intro-fill).
+ * Os `!` vencem regras que forçam tamanho em todo svg (ex.: [&_svg]:size-4 do botão da sidebar).
+ */
+export function StudioSticker({
+  className,
+  outlineMode = "static",
+  fillClassName,
+}: {
+  className?: string
+  outlineMode?: "static" | "draw"
+  fillClassName?: string
+}) {
+  return (
+    <span className={cn("relative block [&_svg]:block [&_svg]:h-auto! [&_svg]:w-full!", className)} aria-hidden>
+      <StudioLogo mode={outlineMode} title="" />
+      {/* marca centrada e um pouco menor que o contorno: sobra uma borda branca igual em volta ("adesivo") */}
+      <span className={cn("absolute inset-0 flex items-center justify-center", fillClassName)}>
+        <span className="w-[84%]">
+          <StudioMark />
+        </span>
+      </span>
+    </span>
+  )
+}

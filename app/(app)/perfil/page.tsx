@@ -44,7 +44,7 @@ async function Profile() {
 
         <SectionCard
           title="Seu jeito de falar"
-          description="Ensina a IA a escrever como você fala. Fica em Análises do canal."
+          description="Ensina a IA a escrever como você fala. Fica no Relatório do canal."
           actions={
             <Link href="/analises?aba=voz" className={buttonVariants({ variant: "outline", size: "sm" })}>
               Abrir
